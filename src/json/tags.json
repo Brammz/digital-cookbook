@@ -1,0 +1,44 @@
+[
+  {
+    "name": "Fast"
+  },
+  {
+    "name": "Medium"
+  },
+  {
+    "name": "Long"
+  },
+  {
+    "name": "Easy"
+  },
+  {
+    "name": "Moderate"
+  },
+  {
+    "name": "Hard"
+  },
+  {
+    "name": "Healthy"
+  },
+  {
+    "name": "Unhealthy"
+  },
+  {
+    "name": "Takeaway"
+  },
+  {
+    "name": "Pasta"
+  },
+  {
+    "name": "Meat"
+  },
+  {
+    "name": "Fish"
+  },
+  {
+    "name": "Salad"
+  },
+  {
+    "name": "Asian"
+  }
+]
