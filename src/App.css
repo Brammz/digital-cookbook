@@ -53,3 +53,7 @@ h1 {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
 }
+
+.modal-content {
+  color: #000000;
+}
