@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Col, Row, Card, InputGroup, FormControl, Button, Modal } from 'react-bootstrap';
+import { Container, Col, Row, Card, InputGroup, FormControl, Modal } from 'react-bootstrap';
 import './App.css';
 import recipesJSON from './json/recipes.json';
 
@@ -74,7 +74,7 @@ class App extends Component {
         <Col key={el.id} md="3">
           <div onClick={(e) => { this.openDetails(e, el.id) }}>
             <Card>
-              <Card.Img src={el.image} width="50%" height="175px"/>
+              <Card.Img src={el.image} height="175px"/>
               <Card.Body>
                 <Card.Title>{el.name}</Card.Title>
                 <Card.Text>{el.tags.join(", ")}</Card.Text>
@@ -107,11 +107,6 @@ class App extends Component {
                 return <p key={i}>{item}</p>
               })}
             </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={this.closeDetails}>
-                Close
-              </Button>
-            </Modal.Footer>
           </Modal>
         </Container>
       </div>

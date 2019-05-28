@@ -43,17 +43,39 @@ h1 {
 
 .card {
   color: #000000;
+  cursor: pointer;
+}
+
+.card-title {
+  margin-bottom: 0.2rem;
 }
 
 .card-body {
-  padding: 0.5rem;
+  padding: 0.25rem;
 }
 
-.badge {
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
+.card-img {
+  object-fit: cover;
+}
+
+.card-text {
+  color: #555555;
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+.modal-header {
+  border-bottom-color: #aaaaaa;
 }
 
 .modal-content {
   color: #000000;
+}
+
+.modal-footer {
+  border-top-color: #aaaaaa;
+}
+
+hr {
+  background-color: #dddddd;
 }

@@ -3,7 +3,7 @@
     "id": 1,
     "name": "Pasta pesto",
     "image": "http://finedininglovers.cdn.crosscast-system.com/BlogPost/l_5758_StockFood-00299679.jpg",
-    "tags": ["Fast", "Easy", "Pasta"],
+    "tags": ["fast", "easy", "pasta"],
     "ingredients": ["Penne", "Pesto", "Pine nuts", "Mozarella"],
     "preparation": "Mix de pijnboompitten, knoflook en basilicum samen met de olijfolie tot een gladde massa.\nRoer de parmezaan erdoor.\n Breng op smaak met peper en zout.\nKook de pasta in voldoende gezouten water al dente.\nGiet af en meng de pesto erdoor."
   },
@@ -11,7 +11,7 @@
     "id": 2,
     "name": "Spaghetti bolognaise",
     "image": "https://img.taste.com.au/PXvnKf8Y/taste/2016/11/spaghetti-bolognaise-104579-1.jpeg",
-    "tags": [],
+    "tags": ["fast", "easy", "pasta"],
     "ingredients": [],
     "preparation": ""
   },
@@ -19,15 +19,15 @@
     "id": 3,
     "name": "Rode curry",
     "image": "https://www.bbcgoodfood.com/sites/default/files/styles/recipe/public/recipe/recipe-image/2017/05/thai-red-curry.jpg",
-    "tags": [],
+    "tags": ["medium", "moderate", "asian"],
     "ingredients": [],
     "preparation": ""
   },
   {
     "id": 4,
-    "name": "Pasta met zalm en komkommer",
+    "name": "Pasta met zalm",
     "image": "https://www.weightwatchers.be/images/2067/dynamic/foodandrecipes/2014/05/BE-FL_7034148_800x800.jpg",
-    "tags": [],
+    "tags": ["medium", "moderate", "pasta"],
     "ingredients": [],
     "preparation": ""
   },
@@ -35,15 +35,15 @@
     "id": 5,
     "name": "Sushi",
     "image": "https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/01/13/10/sushi.jpg",
-    "tags": [],
+    "tags": ["asian", "takeaway"],
     "ingredients": [],
     "preparation": ""
   },
   {
     "id": 6,
-    "name": "Gebraden kip met appelmoes",
+    "name": "Kip aan het spit",
     "image": "https://static01.nyt.com/images/2015/09/21/multimedia/clark-roast-chicken/clark-roast-chicken-superJumbo.jpg",
-    "tags": [],
+    "tags": ["fast", "easy", "poultry"],
     "ingredients": [],
     "preparation": ""
   }

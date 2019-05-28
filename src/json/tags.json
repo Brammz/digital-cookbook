@@ -1,44 +1,47 @@
 [
   {
-    "name": "Fast"
+    "name": "fast"
   },
   {
-    "name": "Medium"
+    "name": "medium"
   },
   {
-    "name": "Long"
+    "name": "long"
   },
   {
-    "name": "Easy"
+    "name": "easy"
   },
   {
-    "name": "Moderate"
+    "name": "moderate"
   },
   {
-    "name": "Hard"
+    "name": "hard"
   },
   {
-    "name": "Healthy"
+    "name": "healthy"
   },
   {
-    "name": "Unhealthy"
+    "name": "unhealthy"
   },
   {
-    "name": "Takeaway"
+    "name": "takeaway"
   },
   {
-    "name": "Pasta"
+    "name": "pasta"
   },
   {
-    "name": "Meat"
+    "name": "meat"
   },
   {
-    "name": "Fish"
+    "name": "fish"
   },
   {
-    "name": "Salad"
+    "name": "salad"
   },
   {
-    "name": "Asian"
+    "name": "asian"
+  },
+  {
+    "name": "poultry"
   }
 ]
