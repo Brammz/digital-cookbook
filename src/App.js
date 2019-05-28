@@ -90,9 +90,9 @@ class App extends Component {
     return (
       <div className="App">
         <Container>
-          <h1>Recipes</h1>
+          <h1>What will you eat today?</h1>
           <InputGroup className="mb-3" onChange={this.updateSearchFilter.bind(this)}>
-            <FormControl placeholder="Search" aria-label="Search" aria-describedby="search-recipe"/>
+            <FormControl className="searchBar" placeholder="Search" aria-label="Search" aria-describedby="search-recipe"/>
           </InputGroup>
           {output}
           <Modal size="lg" show={this.state.showDetail} onHide={this.closeDetails}>
