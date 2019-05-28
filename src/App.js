@@ -27,6 +27,7 @@ class App extends Component {
   }
   
   componentWillMount() {
+    recipesJSON.sort((a,b) => 0.5 - Math.random());
     this.setState({
       recipes: recipesJSON
     });
