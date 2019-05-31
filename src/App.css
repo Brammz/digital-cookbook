@@ -4,17 +4,28 @@
 
 h1 {
   width: 100%;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
+  margin-top: 1.75rem;
+  margin-bottom: 1.75rem;
   border-top: 4px solid #d8542b;
   border-bottom: 4px solid #d8542b;
   text-transform: uppercase;
   font-style: italic;
+  font-size: 2.75rem;
   text-shadow: 20px #000000;
 }
 
-.searchBar {
+.search-bar {
   border-radius: 0;
+  border-right: none;
+}
+
+.straight-corners {
+  border-radius: 0;
+}
+
+.no-border {
+  background-color: #ffffff;
+  border: none;
 }
 
 .row {

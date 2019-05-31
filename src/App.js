@@ -1,19 +1,23 @@
 import React, { Component } from 'react';
-import { Container, Col, Row, Card, InputGroup, FormControl, Modal } from 'react-bootstrap';
+import { Container, Col, Row, Card, InputGroup, FormControl, Modal, Button } from 'react-bootstrap';
 import './App.css';
-import recipesJSON from './json/recipes.json';
+import recipesData from './data/recipes';
 
 class App extends Component {
 
   constructor() {
     super();
-    
+
+    this.searchBar = React.createRef();
+    this.clearSearchbar = this.clearSearchbar.bind(this);
+    this.selectRandom = this.selectRandom.bind(this);
     this.openDetails = this.openDetails.bind(this);
     this.closeDetails = this.closeDetails.bind(this);
 
     this.state = {
       recipes: [],
       filter: '',
+      showClear: false,
       showDetail: false,
       details: {
         id: 0,
@@ -25,18 +29,32 @@ class App extends Component {
       }
     }
   }
-  
+
   componentWillMount() {
-    recipesJSON.sort((a,b) => 0.5 - Math.random());
+    recipesData.sort((a,b) => 0.5 - Math.random());
     this.setState({
-      recipes: recipesJSON
+      recipes: recipesData
     });
   }
 
   updateSearchFilter(e) {
     this.setState({
-      filter: e.target.value.toLowerCase()
+      filter: e.target.value.toLowerCase(),
+      showClear: e.target.value !== ''
     });
+  }
+
+  clearSearchbar(e) {
+    this.searchBar.current.value = '';
+    this.setState({
+      filter: '',
+      showClear: false
+    });
+  }
+
+  selectRandom(e) {
+    const id = Math.floor(Math.random() * (this.state.recipes.length - 1) + 1);
+    this.openDetails(e, id);
   }
 
   openDetails(e, id) {
@@ -65,34 +83,57 @@ class App extends Component {
   }
 
   render() {
-    var colOuput = [];
+    var recipesCopy = this.state.recipes.slice(0);
+    var filters = this.state.filter.endsWith(',') ? this.state.filter.slice(0, -1).split(',') : this.state.filter.split(',');
+    var colOutput = [];
     var output = [];
-    this.state.recipes.filter(el => {
-      return (el.name.toLowerCase().includes(this.state.filter) ||
-              el.tags.some(tag => tag.toLowerCase().includes(this.state.filter)))
-    }).forEach(el => {
-      colOuput.push(
-        <Col key={el.id} md="3">
-          <div onClick={(e) => { this.openDetails(e, el.id) }}>
-            <Card>
-              <Card.Img src={el.image} height="175px"/>
-              <Card.Body>
-                <Card.Title>{el.name}</Card.Title>
-                <Card.Text>{el.tags.join(", ")}</Card.Text>
-              </Card.Body>
-            </Card>
-          </div>
-        </Col>
-      )
-    });
-    while(colOuput.length) output.push(<Row key={colOuput.length}>{colOuput.splice(0,4)}</Row>);
+    
+    recipesCopy
+      .map(r => r.nrOfMatches = 0);
+    recipesCopy
+      .filter(r => {
+        filters.forEach(f => {
+          if (r.name.toLowerCase().includes(f) || r.tags.some(t => t.toLowerCase().includes(f)) || r.ingredients.some(i => i.toLowerCase().includes(f))) {
+            console.log(r);
+            console.log(f);
+            r.nrOfMatches++;
+          }
+        })
+        if (r.nrOfMatches > 0) return true;
+        return false;
+      })
+      .sort((a, b) => b.nrOfMatches - a.nrOfMatches)
+      .forEach(r => {
+        colOutput.push(
+          <Col key={r.id} md="3">
+            <div onClick={e => this.openDetails(e, r.id) }>
+              <Card>
+                <Card.Img src={r.image} height="175px"/>
+                <Card.Body>
+                  <Card.Title>{r.name}</Card.Title>
+                  <Card.Text>{r.tags.join(", ")}</Card.Text>
+                </Card.Body>
+              </Card>
+            </div>
+          </Col>
+        )
+      });    
+    while(colOutput.length) output.push(<Row key={colOutput.length}>{colOutput.splice(0,4)}</Row>);
     
     return (
       <div className="App">
         <Container>
           <h1>What will you eat today?</h1>
           <InputGroup className="mb-3" onChange={this.updateSearchFilter.bind(this)}>
-            <FormControl className="searchBar" placeholder="Search" aria-label="Search" aria-describedby="search-recipe"/>
+            <FormControl ref={this.searchBar} className="search-bar" placeholder="Search (e.g. italian,pasta,easy)" aria-label="Search" aria-describedby="search-recipe"/>
+            {this.state.showClear &&
+              <InputGroup.Append className="no-border" onClick={this.clearSearchbar}>
+                <InputGroup.Text className="no-border"><i className="fas fa-times"></i></InputGroup.Text>
+              </InputGroup.Append>
+            }
+            <InputGroup.Append>
+              <Button className="straight-corners" onClick={this.selectRandom}>Random</Button>
+            </InputGroup.Append>
           </InputGroup>
           {output}
           <Modal size="lg" show={this.state.showDetail} onHide={this.closeDetails}>
@@ -100,10 +141,18 @@ class App extends Component {
               <Modal.Title>{this.state.details.name}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <p><b>Tags: </b>{this.state.details.tags.join(', ')}</p>
-              <hr></hr>
-              <p><b>Ingredients: </b>{this.state.details.ingredients.join(', ')}</p>
-              <hr></hr>
+              {this.state.details.tags.length > 0 &&
+                <div>
+                  <p><b>Tags: </b>{this.state.details.tags.join(', ')}</p>
+                  <hr></hr>
+                </div>
+              }
+              {this.state.details.ingredients.length > 0 &&
+                <div>
+                  <p><b>Ingredients: </b>{this.state.details.ingredients.join(', ')}</p>
+                  <hr></hr>
+                </div>
+              }
               {this.state.details.preparation.split('\n').map((item, i) => {
                 return <p key={i}>{item}</p>
               })}
