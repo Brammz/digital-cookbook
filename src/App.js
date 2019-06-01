@@ -15,6 +15,7 @@ class App extends Component {
     this.closeDetails = this.closeDetails.bind(this);
 
     this.state = {
+      currentUser: '',
       recipes: [],
       filter: '',
       showClear: false,
@@ -31,9 +32,14 @@ class App extends Component {
   }
 
   componentWillMount() {
-    recipesData.sort((a,b) => 0.5 - Math.random());
+    const user = window.location.pathname.slice(1).toUpperCase();
+    const users = Object.keys(recipesData);
+    var selectedUser = null;
+    if (users.includes(user)) selectedUser = user;
+    else selectedUser = users[0];
     this.setState({
-      recipes: recipesData
+      currentUser: selectedUser,
+      recipes: recipesData[selectedUser].sort((a,b) => 0.5 - Math.random())
     });
   }
 
@@ -93,11 +99,7 @@ class App extends Component {
     recipesCopy
       .filter(r => {
         filters.forEach(f => {
-          if (r.name.toLowerCase().includes(f) || r.tags.some(t => t.toLowerCase().includes(f)) || r.ingredients.some(i => i.toLowerCase().includes(f))) {
-            console.log(r);
-            console.log(f);
-            r.nrOfMatches++;
-          }
+          if (r.name.toLowerCase().includes(f) || r.tags.some(t => t.toLowerCase().includes(f)) || r.ingredients.some(i => i.toLowerCase().includes(f))) r.nrOfMatches++;
         })
         if (r.nrOfMatches > 0) return true;
         return false;
