@@ -14,7 +14,8 @@ const Tags = {
   fish: 'fish',
   salad: 'salad',
   asian: 'asian',
-  italian: 'italian'
+  italian: 'italian',
+  swedish: 'swedish'
 }
 
 Object.freeze(Tags);

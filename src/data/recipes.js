@@ -109,6 +109,16 @@ const recipesData = {
       ingredients: [],
       preparation: ""
     }
+  ],
+  "MOSES": [
+    {
+      id: 1,
+      name: "Köttbullar",
+      image: "https://images0.persgroep.net/rcs/73Jc7XuATLGHMoMOK7N7ruY-3yY/diocontent/115119456/_fitwidth/763?appId=2dc96dd3f167e919913d808324cbfeb2&quality=0.8",
+      tags: [Tags.medium, Tags.swedish],
+      ingredients: [],
+      preparation: ""
+    }
   ]
 };
 
