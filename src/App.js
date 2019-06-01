@@ -32,6 +32,11 @@ class App extends Component {
   }
 
   componentWillMount() {
+    console.log(window.location);
+    console.log(window.location.href);
+    console.log(window.location.pathname);
+    console.log(window.location.match);
+    console.log(window.location.match.path);
     const user = window.location.pathname.slice(1).toUpperCase();
     console.log('URL: ' + user)
     const users = Object.keys(recipesData);
