@@ -33,10 +33,12 @@ class App extends Component {
 
   componentWillMount() {
     const user = window.location.pathname.slice(1).toUpperCase();
+    console.log('URL: ' + user)
     const users = Object.keys(recipesData);
     var selectedUser = null;
     if (users.includes(user)) selectedUser = user;
     else selectedUser = users[0];
+    console.log('Selected: ' + selectedUser);
     this.setState({
       currentUser: selectedUser,
       recipes: recipesData[selectedUser].sort((a,b) => 0.5 - Math.random())
