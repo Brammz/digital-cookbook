@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Col, Row, Card, InputGroup, FormControl, Modal, Button } from 'react-bootstrap';
 import './App.css';
-import recipesData from './data/recipes';
+import { SHEET, KEY } from './secrets';
 
 class App extends Component {
 
@@ -15,7 +15,6 @@ class App extends Component {
     this.closeDetails = this.closeDetails.bind(this);
 
     this.state = {
-      currentUser: '',
       recipes: [],
       filter: '',
       showClear: false,
@@ -31,18 +30,25 @@ class App extends Component {
     }
   }
 
-  componentWillMount() {
-    const user = window.location.hash.slice(2).toUpperCase();
-    console.log('URL: ' + user)
-    const users = Object.keys(recipesData);
-    var selectedUser = null;
-    if (users.includes(user)) selectedUser = user;
-    else selectedUser = users[0];
-    console.log('Selected: ' + selectedUser);
-    this.setState({
-      currentUser: selectedUser,
-      recipes: recipesData[selectedUser].sort((a,b) => 0.5 - Math.random())
-    });
+  componentDidMount() {
+    const hash = window.location.hash.slice(2);
+    const user = (hash === '' ? 'BRAM' : hash)
+    fetch('https://sheets.googleapis.com/v4/spreadsheets/' + SHEET + '/values/' + user + '?majorDimension=ROWS&key=' + KEY)
+      .then(response => response.json())
+      .then(data => {
+        const values = data.values;
+        const rows = [];
+        for (let i = 1; i < values.length; i++) {
+          let row = {};
+          for (let j = 0; j < values[i].length; j++) {
+            row[values[0][j]] = ((values[0][j] === 'tags' || values[0][j] === 'ingredients') ? values[i][j].split(', ') : values[i][j]);
+          }
+          rows.push(row);
+        }
+        this.setState({
+          recipes: rows
+        });
+      });
   }
 
   updateSearchFilter(e) {
