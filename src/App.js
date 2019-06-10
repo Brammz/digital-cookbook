@@ -26,7 +26,8 @@ class App extends Component {
         tags: [],
         ingredients: [],
         preparation: ''
-      }
+      },
+      hasError: false
     }
   }
 
@@ -40,15 +41,21 @@ class App extends Component {
         const rows = [];
         for (let i = 1; i < values.length; i++) {
           let row = {};
-          for (let j = 0; j < values[i].length; j++) {
-            row[values[0][j]] = ((values[0][j] === 'tags' || values[0][j] === 'ingredients') ? values[i][j].split(', ') : values[i][j]);
+          for (let j = 0; j < values[0].length; j++) {
+            if (values[i][j] === undefined) {
+              row[values[0][j]] = '' 
+            } else {
+              if (values[0][j] === 'id') row[values[0][j]] = parseInt(values[i][j]);
+              else row[values[0][j]] = ((values[0][j] === 'tags' || values[0][j] === 'ingredients') ? values[i][j].split(', ') : values[i][j]);
+            }
           }
           rows.push(row);
         }
         this.setState({
           recipes: rows
         });
-      });
+      })
+      .catch(err => this.setState({ hasError: true }));
   }
 
   updateSearchFilter(e) {
@@ -97,6 +104,7 @@ class App extends Component {
   }
 
   render() {
+    if (this.state.hasError) return <h2><center>Something went wrong</center></h2>;
     var recipesCopy = this.state.recipes.slice(0);
     var filters = this.state.filter.endsWith(',') ? this.state.filter.slice(0, -1).split(',') : this.state.filter.split(',');
     var colOutput = [];
