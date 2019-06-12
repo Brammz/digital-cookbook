@@ -28,6 +28,10 @@ h1 {
   border: none;
 }
 
+.left-border {
+  border-left: 1px solid #000000;
+}
+
 .row {
   margin-top: 1.75rem;
 }
@@ -70,12 +74,17 @@ h1 {
   font-style: italic;
 }
 
-.modal-header {
-  border-bottom-color: #aaaaaa;
+.modal-backdrop {
+  background-color: #111111;
 }
 
 .modal-content {
   color: #000000;
+  border-radius: 0;
+}
+
+.modal-header {
+  border-bottom-color: #aaaaaa;
 }
 
 .modal-footer {

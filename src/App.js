@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Container, Col, Row, Card, InputGroup, FormControl, Modal, Button } from 'react-bootstrap';
+import { Container, Col, Row, Card, InputGroup, FormControl, Modal, Form, Button } from 'react-bootstrap';
 import './App.css';
-import { SHEET, KEY } from './secrets';
+import { SHEET, KEY, CLIENTID } from './secrets';
 
 class App extends Component {
 
@@ -10,14 +10,20 @@ class App extends Component {
 
     this.searchBar = React.createRef();
     this.clearSearchbar = this.clearSearchbar.bind(this);
-    this.selectRandom = this.selectRandom.bind(this);
+    this.getSuggestions = this.getSuggestions.bind(this);
+    this.openAddRecipe = this.openAddRecipe.bind(this);
+    this.closeAddRecipe = this.closeAddRecipe.bind(this);
+    this.submitRecipe = this.submitRecipe.bind(this);
     this.openDetails = this.openDetails.bind(this);
     this.closeDetails = this.closeDetails.bind(this);
 
     this.state = {
+      user: '',
+      rawValues: [],
       recipes: [],
       filter: '',
       showClear: false,
+      showAddRecipe: false,
       showDetail: false,
       details: {
         id: 0,
@@ -52,10 +58,49 @@ class App extends Component {
           rows.push(row);
         }
         this.setState({
-          recipes: rows
+          user: user,
+          rawValues: values,
+          recipes: rows.sort((a,b) => 0.5 - Math.random())
         });
       })
       .catch(err => this.setState({ hasError: true }));
+  }
+
+  submitRecipe(e) {
+    e.preventDefault();
+    var newValues = [this.state.rawValues.length.toString()];
+    for (let i = 0; i < e.target.length-1; i++) {
+      newValues.push(e.target[i].value);
+    }
+    console.log(newValues);
+    // fetch('https://sheets.googleapis.com/v4/spreadsheets/' + SHEET + '/values/' + this.state.user + ':append?key=' + KEY, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Authorization': 'Bearer ' + CLIENTID,
+    //     'Accept': 'application/json',
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: {
+    //     data: JSON.stringify({
+    //       values: [
+    //         newValues
+    //       ]
+    //     })
+    //   }
+    // }).catch(err => console.err(err));
+    this.closeAddRecipe();
+  }
+
+  openAddRecipe(e) {
+    this.setState({
+      showAddRecipe: true
+    });
+  }
+
+  closeAddRecipe(e) {
+    this.setState({
+      showAddRecipe: false
+    });
   }
 
   updateSearchFilter(e) {
@@ -73,7 +118,7 @@ class App extends Component {
     });
   }
 
-  selectRandom(e) {
+  getSuggestions(e) {
     const id = Math.floor(Math.random() * (this.state.recipes.length - 1) + 1);
     this.openDetails(e, id);
   }
@@ -150,10 +195,13 @@ class App extends Component {
               </InputGroup.Append>
             }
             <InputGroup.Append>
-              <Button className="straight-corners" onClick={this.selectRandom}>Random</Button>
+              <Button className="straight-corners" onClick={this.getSuggestions}>Suggestions</Button>
+              <Button className="straight-corners left-border" onClick={this.openAddRecipe}><i className="fas fa-plus"></i></Button>
             </InputGroup.Append>
           </InputGroup>
+
           {output}
+
           <Modal size="lg" show={this.state.showDetail} onHide={this.closeDetails}>
             <Modal.Header closeButton>
               <Modal.Title>{this.state.details.name}</Modal.Title>
@@ -176,6 +224,41 @@ class App extends Component {
               })}
             </Modal.Body>
           </Modal>
+
+          <Modal size="lg" show={this.state.showAddRecipe} onHide={this.closeAddRecipe}>
+            <Modal.Header closeButton>
+              <Modal.Title>Add a new recipe</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form id="addNewRecipe" onSubmit={this.submitRecipe}>
+                <Form.Group controlId="name">
+                  <Form.Label>Name</Form.Label>
+                  <Form.Control type="text" placeholder="" />
+                </Form.Group>
+                <Form.Group controlId="tags">
+                  <Form.Label>Tags</Form.Label>
+                  <Form.Control type="text" placeholder="" />
+                </Form.Group>
+                <Form.Group controlId="ingredients">
+                  <Form.Label>Ingredients</Form.Label>
+                  <Form.Control type="text" placeholder="" />
+                </Form.Group>
+                <Form.Group controlId="image">
+                  <Form.Label>Image URL</Form.Label>
+                  <Form.Control type="text" placeholder="" />
+                </Form.Group>
+                <Form.Group controlId="preparation">
+                  <Form.Label>Preparation</Form.Label>
+                  <Form.Control as="textarea" rows="5" />
+                </Form.Group>
+              </Form>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={this.closeAddRecipe}>Close</Button>
+              <Button variant="primary" form="addNewRecipe" type="submit">Add</Button>
+            </Modal.Footer>
+          </Modal>
+
         </Container>
       </div>
     );
