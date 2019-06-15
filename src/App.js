@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Col, Row, Card, InputGroup, FormControl, Modal, Form, Button } from 'react-bootstrap';
+import { Container, Col, Row, Card, InputGroup, FormControl, Modal, Form, Button, Image } from 'react-bootstrap';
 import './App.css';
 import { SHEET, KEY, CLIENTID } from './secrets';
 
@@ -10,7 +10,8 @@ class App extends Component {
 
     this.searchBar = React.createRef();
     this.clearSearchbar = this.clearSearchbar.bind(this);
-    this.getSuggestions = this.getSuggestions.bind(this);
+    this.openSuggestions = this.openSuggestions.bind(this);
+    this.closeSuggestions = this.closeSuggestions.bind(this);
     this.openAddRecipe = this.openAddRecipe.bind(this);
     this.closeAddRecipe = this.closeAddRecipe.bind(this);
     this.submitRecipe = this.submitRecipe.bind(this);
@@ -23,6 +24,8 @@ class App extends Component {
       recipes: [],
       filter: '',
       showClear: false,
+      showSuggestions: false,
+      suggestedRecipes: [],
       showAddRecipe: false,
       showDetail: false,
       details: {
@@ -118,12 +121,33 @@ class App extends Component {
     });
   }
 
-  getSuggestions(e) {
-    const id = Math.floor(Math.random() * (this.state.recipes.length - 1) + 1);
-    this.openDetails(e, id);
+  openSuggestions(e) {
+    var suggestions = [];
+    if (this.state.recipes.length < 3) {
+      suggestions = this.state.recipes.slice(0);
+    } else {
+      var ids = [];
+      while (ids.length < 3) {
+        const id = Math.floor(Math.random() * this.state.recipes.length);
+        if (!ids.includes(id)) {
+          ids.push(id);
+          suggestions.push(this.state.recipes[id])
+        }
+      }
+    }
+    this.setState({
+      showSuggestions: true,
+      suggestedRecipes: suggestions
+    });
   }
 
-  openDetails(e, id) {
+  closeSuggestions(e) {
+    this.setState({
+      showSuggestions: false
+    });
+  }
+
+  openDetails(id) {
     this.state.recipes.forEach(el => {
       if (el.id === id) {
         this.setState({
@@ -169,7 +193,7 @@ class App extends Component {
       .forEach(r => {
         colOutput.push(
           <Col key={r.id} md="3">
-            <div onClick={e => this.openDetails(e, r.id) }>
+            <div onClick={e => this.openDetails(r.id) }>
               <Card>
                 <Card.Img src={r.image} height="175px"/>
                 <Card.Body>
@@ -195,33 +219,45 @@ class App extends Component {
               </InputGroup.Append>
             }
             <InputGroup.Append>
-              <Button className="straight-corners" onClick={this.getSuggestions}>Suggestions</Button>
-              <Button className="straight-corners left-border" onClick={this.openAddRecipe}><i className="fas fa-plus"></i></Button>
+              <Button className="straight-corners" onClick={this.openSuggestions}>Suggestions</Button>
+              <Button className="straight-corners left-border-dark" onClick={this.openAddRecipe}><i className="fas fa-plus"></i></Button>
             </InputGroup.Append>
           </InputGroup>
 
           {output}
 
-          <Modal size="lg" show={this.state.showDetail} onHide={this.closeDetails}>
+          <Modal size="xl" show={this.state.showSuggestions} onHide={this.closeSuggestions}>
             <Modal.Header closeButton>
-              <Modal.Title>{this.state.details.name}</Modal.Title>
+              <Modal.Title>Pick your favorite</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              {this.state.details.tags.length > 0 &&
-                <div>
-                  <p><b>Tags: </b>{this.state.details.tags.join(', ')}</p>
-                  <hr></hr>
-                </div>
-              }
-              {this.state.details.ingredients.length > 0 &&
-                <div>
-                  <p><b>Ingredients: </b>{this.state.details.ingredients.join(', ')}</p>
-                  <hr></hr>
-                </div>
-              }
-              {this.state.details.preparation.split('\n').map((item, i) => {
-                return <p key={i}>{item}</p>
-              })}
+              <Row className="suggestion-row">
+                {this.state.suggestedRecipes.map((suggestion, i) => {
+                  if (i === 0) {
+                    return (
+                      <Col key={suggestion.id} md="4">
+                        <div className="suggestion" onClick={() => {this.closeSuggestions();this.openDetails(suggestion.id)}}>
+                          <Image src={suggestion.image} className="suggestion-image"></Image>
+                          <h3 className="suggestion-title"><center>{suggestion.name}</center></h3>
+                          <center><p className="suggestion-text">{suggestion.tags.join(', ')}</p></center>
+                          <center><p className="suggestion-text">{suggestion.ingredients.join(', ')}</p></center>
+                        </div>
+                      </Col>
+                    )
+                  } else {
+                    return (
+                      <Col key={suggestion.id} md="4" className="left-border-light">
+                        <div className="suggestion" onClick={() => {this.closeSuggestions();this.openDetails(suggestion.id)}}>
+                          <Image src={suggestion.image} className="suggestion-image"></Image>
+                          <h3 className="suggestion-title"><center>{suggestion.name}</center></h3>
+                          <center><p className="suggestion-text">{suggestion.tags.join(', ')}</p></center>
+                          <center><p className="suggestion-text">{suggestion.ingredients.join(', ')}</p></center>
+                        </div>
+                      </Col>
+                    )
+                  }
+                })}
+              </Row>
             </Modal.Body>
           </Modal>
 
@@ -257,6 +293,29 @@ class App extends Component {
               <Button variant="secondary" onClick={this.closeAddRecipe}>Close</Button>
               <Button variant="primary" form="addNewRecipe" type="submit">Add</Button>
             </Modal.Footer>
+          </Modal>
+
+          <Modal size="lg" show={this.state.showDetail} onHide={this.closeDetails}>
+            <Modal.Header closeButton>
+              <Modal.Title>{this.state.details.name}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {this.state.details.tags.length > 0 &&
+                <div>
+                  <p><b>Tags: </b>{this.state.details.tags.join(', ')}</p>
+                  <hr></hr>
+                </div>
+              }
+              {this.state.details.ingredients.length > 0 &&
+                <div>
+                  <p><b>Ingredients: </b>{this.state.details.ingredients.join(', ')}</p>
+                  <hr></hr>
+                </div>
+              }
+              {this.state.details.preparation.split('\n').map((item, i) => {
+                return <p key={i}>{item}</p>
+              })}
+            </Modal.Body>
           </Modal>
 
         </Container>
