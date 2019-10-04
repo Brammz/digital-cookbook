@@ -1,23 +1,17 @@
 import React, { Component } from 'react';
-import { Container, Col, Row, Card, InputGroup, FormControl, Modal, Form, Button, Image } from 'react-bootstrap';
+import { Container, Col, Row, InputGroup, FormControl, Modal, Form, Button, Image } from 'react-bootstrap';
+import { google } from 'googleapis';
+import { SHEET_ID, credentials } from './secrets';
+import { RecipeCard } from './components';
 import './App.css';
-import { SHEET, KEY, CLIENTID } from './secrets';
+
+const client = new google.auth.JWT(credentials.client_email, null, credentials.private_key, ['https://www.googleapis.com/auth/spreadsheets']);
+const sheets = google.sheets('v4');
 
 class App extends Component {
 
   constructor() {
     super();
-
-    this.searchBar = React.createRef();
-    this.clearSearchbar = this.clearSearchbar.bind(this);
-    this.openSuggestions = this.openSuggestions.bind(this);
-    this.closeSuggestions = this.closeSuggestions.bind(this);
-    this.openAddRecipe = this.openAddRecipe.bind(this);
-    this.closeAddRecipe = this.closeAddRecipe.bind(this);
-    this.submitRecipe = this.submitRecipe.bind(this);
-    this.openDetails = this.openDetails.bind(this);
-    this.closeDetails = this.closeDetails.bind(this);
-
     this.state = {
       user: '',
       rawValues: [],
@@ -42,11 +36,29 @@ class App extends Component {
 
   componentDidMount() {
     const hash = window.location.hash.slice(2);
-    const user = (hash === '' ? 'BRAM' : hash)
-    fetch('https://sheets.googleapis.com/v4/spreadsheets/' + SHEET + '/values/' + user + '?majorDimension=ROWS&key=' + KEY)
-      .then(response => response.json())
-      .then(data => {
-        const values = data.values;
+    const user = (hash === '' ? 'BRAM' : hash);
+    this.authorize();
+    this.fetchRecipes(user);
+  }
+
+  authorize = () => {
+    client.authorize((err, res) => {
+      if (err) console.log(err);
+      else console.log('Authorized!', res);
+    });
+  }
+
+  fetchRecipes = (user = this.state.user) => {
+    sheets.spreadsheets.values.get(
+      {
+          auth: client,
+          spreadsheetId: SHEET_ID,
+          range: user,
+          majorDimension: 'ROWS'
+      },
+      (err, res) => {
+        if (err) console.error('The API returned an error.', err);
+        const values = res.data.values;
         const rows = [];
         for (let i = 1; i < values.length; i++) {
           let row = {};
@@ -61,59 +73,73 @@ class App extends Component {
           rows.push(row);
         }
         this.setState({
+          client: client,
+          sheets: sheets,
           user: user,
           rawValues: values,
-          recipes: rows.sort((a,b) => 0.5 - Math.random())
+          recipes: this.shuffle(rows)
         });
-      })
-      .catch(err => this.setState({ hasError: true }));
+      }
+    );
   }
 
-  submitRecipe(e) {
+  shuffle = (array) => {
+    var m = array.length, t, i;
+    while (m) {
+      i = Math.floor(Math.random() * m--);
+      t = array[m];
+      array[m] = array[i];
+      array[i] = t;
+    }
+    return array;
+  }
+
+  addRecipe = (e) => {
     e.preventDefault();
     var newValues = [this.state.rawValues.length.toString()];
     for (let i = 0; i < e.target.length-1; i++) {
       newValues.push(e.target[i].value);
     }
     console.log(newValues);
-    // fetch('https://sheets.googleapis.com/v4/spreadsheets/' + SHEET + '/values/' + this.state.user + ':append?key=' + KEY, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Authorization': 'Bearer ' + CLIENTID,
-    //     'Accept': 'application/json',
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: {
-    //     data: JSON.stringify({
-    //       values: [
-    //         newValues
-    //       ]
-    //     })
-    //   }
-    // }).catch(err => console.err(err));
-    this.closeAddRecipe();
+
+    this.state.sheets.spreadsheets.values.append({
+      auth: this.state.client,
+      spreadsheetId: SHEET_ID,
+      range: this.state.user,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
+        values: [
+          newValues
+        ],
+      },
+    }).then((res) => {
+      this.fetchRecipes();
+      this.closeAddRecipe();
+      console.log('res append :', res);
+    }).catch((err) => { console.log('err append :', err ) });
+    
   }
 
-  openAddRecipe(e) {
+  openAddRecipe = (e) => {
     this.setState({
       showAddRecipe: true
     });
   }
 
-  closeAddRecipe(e) {
+  closeAddRecipe = (e) => {
     this.setState({
       showAddRecipe: false
     });
   }
 
-  updateSearchFilter(e) {
+  updateSearchFilter = (e) => {
     this.setState({
       filter: e.target.value.toLowerCase(),
       showClear: e.target.value !== ''
     });
   }
 
-  clearSearchbar(e) {
+  clearSearchbar = (e) => {
     this.searchBar.current.value = '';
     this.setState({
       filter: '',
@@ -121,7 +147,7 @@ class App extends Component {
     });
   }
 
-  openSuggestions(e) {
+  openSuggestions = (e) => {
     var suggestions = [];
     if (this.state.recipes.length < 3) {
       suggestions = this.state.recipes.slice(0);
@@ -141,13 +167,13 @@ class App extends Component {
     });
   }
 
-  closeSuggestions(e) {
+  closeSuggestions = (e) => {
     this.setState({
       showSuggestions: false
     });
   }
 
-  openDetails(id) {
+  openDetails = (id) => {
     this.state.recipes.forEach(el => {
       if (el.id === id) {
         this.setState({
@@ -166,7 +192,7 @@ class App extends Component {
     });
   }
 
-  closeDetails() {
+  closeDetails = () => {
     this.setState({
       showDetail: false
     });
@@ -190,18 +216,10 @@ class App extends Component {
         return false;
       })
       .sort((a, b) => b.nrOfMatches - a.nrOfMatches)
-      .forEach(r => {
+      .forEach(recipeDetails => {
         colOutput.push(
-          <Col key={r.id} md="3">
-            <div onClick={e => this.openDetails(r.id) }>
-              <Card>
-                <Card.Img src={r.image} height="175px"/>
-                <Card.Body>
-                  <Card.Title>{r.name}</Card.Title>
-                  <Card.Text>{r.tags.join(", ")}</Card.Text>
-                </Card.Body>
-              </Card>
-            </div>
+          <Col key={recipeDetails.id} md="3"  onClick={() => this.openDetails(recipeDetails.id) }>
+            <RecipeCard {...recipeDetails} />
           </Col>
         )
       });    
@@ -212,7 +230,7 @@ class App extends Component {
         <Container>
           <h1>What will you eat today?</h1>
           <InputGroup className="mb-3" onChange={this.updateSearchFilter.bind(this)}>
-            <FormControl ref={this.searchBar} className="search-bar" placeholder="Search (e.g. italian,pasta,easy)" aria-label="Search" aria-describedby="search-recipe"/>
+            <FormControl className="search-bar" placeholder="Search (e.g. italian,pasta,easy)" aria-label="Search" aria-describedby="search-recipe"/>
             {this.state.showClear &&
               <InputGroup.Append className="no-border" onClick={this.clearSearchbar}>
                 <InputGroup.Text className="no-border"><i className="fas fa-times"></i></InputGroup.Text>
@@ -266,7 +284,7 @@ class App extends Component {
               <Modal.Title>Add a new recipe</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <Form id="addNewRecipe" onSubmit={this.submitRecipe}>
+              <Form id="addNewRecipe" onSubmit={this.addRecipe}>
                 <Form.Group controlId="name">
                   <Form.Label>Name</Form.Label>
                   <Form.Control type="text" placeholder="" />
