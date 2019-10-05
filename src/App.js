@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Col, Row, InputGroup, FormControl, Modal, Form, Button, Image } from 'react-bootstrap';
 import { google } from 'googleapis';
-import { SHEET_ID, credentials } from './secrets';
+import { SHEET_ID, DEFAULT_USER, credentials } from './secrets';
 import { RecipeCard } from './components';
 import './App.css';
 
@@ -36,7 +36,7 @@ class App extends Component {
 
   componentDidMount() {
     const hash = window.location.hash.slice(2);
-    const user = (hash === '' ? 'BRAM' : hash);
+    const user = (hash === '' ? DEFAULT_USER : hash);
     this.authorize();
     this.fetchRecipes(user);
   }
