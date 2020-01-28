@@ -1,7 +1,11 @@
 import React from 'react';
+import { RouteComponentProps } from 'react-router-dom';
+
 import { IonBackButton, IonButtons, IonHeader, IonPage, IonToolbar, IonTitle, IonContent } from '@ionic/react';
 
-const Recipe: React.FC = () => {
+type MyProps = RouteComponentProps<{ id?: string }>
+
+const Recipe: React.FC<MyProps> = ({ match }) => {
   return (
     <IonPage>
       <IonHeader>
@@ -9,7 +13,7 @@ const Recipe: React.FC = () => {
           <IonButtons slot="start">
             <IonBackButton defaultHref="/recipes" />
           </IonButtons>
-          <IonTitle>Recipe</IonTitle>
+          <IonTitle>Recipe {match.params.id}</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>

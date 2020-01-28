@@ -16,7 +16,7 @@ const Recipes: React.FC = () => {
         <IonSearchbar onIonChange={search} debounce={0} className="recipe-searchbar" />
         {recipes.filter(recipe => recipe.name.toLowerCase().includes(filter) || recipe.ingredients.some(ingredient => ingredient.toLowerCase().includes(filter)) || recipe.tags.some(tag => tag.toLowerCase().includes(filter))).map((recipe, index) => {
           return (
-            <IonCard key={recipe.id} routerLink="/recipes/details">
+            <IonCard key={recipe.id} routerLink={"/recipes/" + recipe.id}>
               <img src={recipe.image} alt={recipe.name} className="recipe-img" />
               <IonCardHeader className="recipe-header">
                 <IonCardTitle className="recipe-title">{recipe.name}</IonCardTitle>
