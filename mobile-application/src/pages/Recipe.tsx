@@ -7,7 +7,7 @@ const Recipe: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/tab2" />
+            <IonBackButton defaultHref="/recipes" />
           </IonButtons>
           <IonTitle>Recipe</IonTitle>
         </IonToolbar>

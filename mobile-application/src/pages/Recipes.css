@@ -1,4 +1,17 @@
-.welcome-card img {
-  max-height: 35vh;
-  overflow: hidden;
+.recipe-searchbar {
+  padding-bottom: 0;
+}
+
+.recipe-img {
+  height: 25vh;
+  object-fit: cover;
+}
+
+.recipe-header {
+  padding: 10px 20px 10px;
+  text-align: center;
+}
+
+.recipe-title {
+  font-size: 3vh;
 }
