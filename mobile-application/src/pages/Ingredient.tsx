@@ -1,15 +1,15 @@
 import React from 'react';
 import { IonBackButton, IonButtons, IonHeader, IonPage, IonToolbar, IonTitle, IonContent } from '@ionic/react';
 
-const Details: React.FC = () => {
+const Ingredient: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/tab2" />
+            <IonBackButton defaultHref="/ingredients" />
           </IonButtons>
-          <IonTitle>Detail</IonTitle>
+          <IonTitle>Ingredient</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
@@ -19,4 +19,4 @@ const Details: React.FC = () => {
   );
 };
 
-export default Details;
+export default Ingredient;
