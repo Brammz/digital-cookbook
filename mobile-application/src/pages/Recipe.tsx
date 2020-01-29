@@ -1,6 +1,6 @@
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { IonBackButton, IonButtons, IonHeader, IonPage, IonToolbar, IonTitle, IonContent, IonFab, IonFabButton, IonIcon, IonChip, IonLabel } from '@ionic/react';
+import { IonBackButton, IonButtons, IonHeader, IonPage, IonToolbar, IonTitle, IonContent, IonFab, IonFabButton, IonIcon, IonChip, IonLabel, IonRouterLink } from '@ionic/react';
 import { basket } from 'ionicons/icons';
 import { recipes } from './../data';
 
@@ -25,7 +25,13 @@ const Recipe: React.FC<RouteProps> = ({ match }) => {
           <h1>Ingrediënten</h1>
           <ul>
             {recipe?.ingredients.map((ingredient, index) => {
-              return (<li key={index}>{ingredient.name.replace(/./, c => c.toUpperCase())}</li>)
+              return (
+                <li key={index}>
+                  <IonRouterLink routerLink={'/ingredients/' + ingredient.id} className="no-layout">
+                    {ingredient.name.replace(/./, c => c.toUpperCase())}
+                  </IonRouterLink>
+                </li>
+              )
             })}
           </ul>
 

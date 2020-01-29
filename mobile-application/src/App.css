@@ -27,6 +27,11 @@
   padding: 0 20px;
 }
 
+.no-layout {
+  text-decoration: none;
+  color: inherit;
+}
+
 .divider {
   background-color: lightgrey;
 }
