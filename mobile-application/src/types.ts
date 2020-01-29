@@ -17,17 +17,21 @@ class Recipe {
 }
 
 class Ingredient {
+  id: number;
   name: string;
 
-  constructor(name: string) {
+  constructor(id: number, name: string) {
+    this.id = id;
     this.name = name;
   }
 }
 
 class Tag {
+  id: number;
   name: string;
 
-  constructor(name: string) {
+  constructor(id: number, name: string) {
+    this.id = id;
     this.name = name;
   }
 }

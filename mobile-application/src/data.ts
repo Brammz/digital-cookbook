@@ -1,20 +1,20 @@
 import { Recipe, Ingredient, Tag } from './types';
 
-const penne = new Ingredient('penne');
-const spaghetti = new Ingredient('spaghetti');
-const mozarella = new Ingredient('mozarella');
-const tomatensaus = new Ingredient('tomatensaus');
-const kaas = new Ingredient('kaas');
-const gehakt = new Ingredient('gehakt');
-const kip = new Ingredient('kip');
-const rijst = new Ingredient('rijst');
-const zalm = new Ingredient('zalm');
+const penne = new Ingredient(1, 'penne');
+const spaghetti = new Ingredient(2, 'spaghetti');
+const mozarella = new Ingredient(3, 'mozarella');
+const tomatensaus = new Ingredient(4, 'tomatensaus');
+const kaas = new Ingredient(5, 'kaas');
+const gehakt = new Ingredient(6, 'gehakt');
+const kip = new Ingredient(7, 'kip');
+const rijst = new Ingredient(8, 'rijst');
+const zalm = new Ingredient(9, 'zalm');
 const ingredients = [penne, spaghetti, mozarella, tomatensaus, kaas, gehakt, kip, rijst, zalm];
 
-const easy = new Tag('easy');
-const fast = new Tag('fast');
-const asian = new Tag('asian');
-const takeaway = new Tag('takeaway');
+const easy = new Tag(1, 'easy');
+const fast = new Tag(2, 'fast');
+const asian = new Tag(3, 'asian');
+const takeaway = new Tag(4, 'takeaway');
 const tags = [easy, fast, asian, takeaway];
 
 const recipe1 = new Recipe(1, 'Pasta pesto', [penne, mozarella], [fast, easy], 'http://finedininglovers.cdn.crosscast-system.com/BlogPost/l_5758_StockFood-00299679.jpg', 'Mix de pijnboompitten, knoflook en basilicum samen met de olijfolie tot een gladde massa.>Roer de parmezaan erdoor.>Breng op smaak met peper en zout.>Kook de pasta in voldoende gezouten water al dente.>Giet af en meng de pesto erdoor.');
