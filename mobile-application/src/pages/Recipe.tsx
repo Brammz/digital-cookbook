@@ -4,9 +4,9 @@ import { IonBackButton, IonButtons, IonHeader, IonPage, IonToolbar, IonTitle, Io
 import { basket } from 'ionicons/icons';
 import { recipes } from './../data';
 
-type MyProps = RouteComponentProps<{ id?: string }>
+type RouteProps = RouteComponentProps<{ id?: string }>
 
-const Recipe: React.FC<MyProps> = ({ match }) => {
+const Recipe: React.FC<RouteProps> = ({ match }) => {
   const recipe = recipes.find(recipe => recipe.id === Number(match.params.id));
 
   return (
@@ -24,28 +24,25 @@ const Recipe: React.FC<MyProps> = ({ match }) => {
         <div className="text-container">
           <h1>Ingrediënten</h1>
           <ul>
-            {recipe?.ingredients.map(ingredient => {
-              return (
-                <li key={ingredient.name}>{ingredient.name.replace(/./, c => c.toUpperCase())}</li>
-              )
+            {recipe?.ingredients.map((ingredient, index) => {
+              return (<li key={index}>{ingredient.name.replace(/./, c => c.toUpperCase())}</li>)
             })}
           </ul>
+
           <hr className="divider" />
+
           <h1>Bereiding</h1>
-          {/* <p className="pre-formatted">{recipe?.preparation}</p> */}
           <ol>
-            {recipe?.preparation.split('>').map(step => {
-              return (
-                <li>
-                  {step}
-                </li>
-              )
+            {recipe?.preparation.split('>').map((step, index) => {
+              return (<li key={index}>{step}</li>)
             })}
           </ol>
+
           <hr className="divider" />
-          {recipe?.tags.map(tag => {
+
+          {recipe?.tags.map((tag, index) => {
             return (
-              <IonChip>
+              <IonChip key={index}>
                 <IonLabel>{tag.name.replace(/./, c => c.toUpperCase())}</IonLabel>
               </IonChip>
             )

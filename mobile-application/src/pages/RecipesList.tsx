@@ -1,6 +1,6 @@
-import React   from 'react';
+import React from 'react';
 import { IonCard, IonCardHeader, IonCardTitle } from '@ionic/react';
-import { Recipe } from './../data';
+import { Recipe } from './../types';
 
 interface RecipesProps {
 	recipes: Recipe[];
@@ -11,7 +11,7 @@ const RecipesList: React.FC<RecipesProps> = ({ recipes }) => {
 		<div>
 			{recipes.map((recipe, index) => {
 				return (
-					<IonCard key={recipe.id} routerLink={"/recipes/" + recipe.id}>
+					<IonCard key={index} routerLink={'/recipes/' + recipe.id}>
 						<img src={recipe.image} alt={recipe.name} className="recipes-img" />
 						<IonCardHeader className="recipes-header">
 							<IonCardTitle className="recipes-title">{recipe.name}</IonCardTitle>
