@@ -10,7 +10,7 @@ const Ingredients: React.FC = () => {
     if (ingredient.name.charAt(0) !== currentLetter) {
       currentLetter = ingredient.name.charAt(0);
       alphabeticIngredientList.push(
-        <IonItemDivider key={index}>
+        <IonItemDivider key={currentLetter}>
           <IonLabel>
             {currentLetter.toUpperCase()}
           </IonLabel>

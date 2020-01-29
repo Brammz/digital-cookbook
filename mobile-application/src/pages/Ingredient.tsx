@@ -1,12 +1,14 @@
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { IonBackButton, IonButtons, IonHeader, IonPage, IonToolbar, IonTitle, IonContent } from '@ionic/react';
-import { ingredients } from './../data';
+import RecipesList from './RecipesList';
+import { recipes, ingredients } from './../data';
 
 type RouteProps = RouteComponentProps<{ id?: string }>
 
 const Ingredient: React.FC<RouteProps> = ({ match }) => {
   const ingredient = ingredients.find(ingredient => ingredient.id === Number(match.params.id));
+  const filteredRecipes = recipes.filter(recipe => recipe.ingredients.some(i => i.id === ingredient?.id));
 
   return (
     <IonPage>
@@ -15,11 +17,11 @@ const Ingredient: React.FC<RouteProps> = ({ match }) => {
           <IonButtons slot="start">
             <IonBackButton defaultHref="/ingredients" />
           </IonButtons>
-          <IonTitle>Ingredient {ingredient?.id}</IonTitle>
+          <IonTitle>{ingredient?.name.replace(/./, c => c.toUpperCase())}</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <p>Details</p>
+        <RecipesList recipes={filteredRecipes} />
       </IonContent>
     </IonPage>
   );
