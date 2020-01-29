@@ -1,0 +1,39 @@
+.recipes-searchbar {
+  padding-bottom: 0;
+}
+
+.recipes-img {
+  height: 25vh;
+  object-fit: cover;
+}
+
+.recipes-header {
+  padding: 10px 20px 10px;
+  text-align: center;
+}
+
+.recipes-title {
+  font-size: 3vh;
+}
+
+.recipe-img {
+  width: 100%;
+  height: 28vh;
+  object-fit: cover;
+}
+
+.text-container {
+  padding: 0 20px;
+}
+
+.divider {
+  background-color: lightgrey;
+}
+
+ol, ul {
+  padding-left: 20px;
+}
+
+.pre-formatted {
+  white-space: pre-line !important;
+}

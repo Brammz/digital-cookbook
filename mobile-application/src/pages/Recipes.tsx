@@ -1,7 +1,7 @@
 import React, { useState }   from 'react';
-import { IonPage, IonContent,IonSearchbar, IonCard, IonCardHeader, IonCardTitle } from '@ionic/react';
-import recipes from './../recipes';
-import './Recipes.css';
+import { IonPage, IonContent, IonSearchbar } from '@ionic/react';
+import RecipesList from './RecipesList';
+import recipes from './../data';
 
 const Recipes: React.FC = () => {
   const [filter, setFilter] = useState('');
@@ -13,17 +13,8 @@ const Recipes: React.FC = () => {
   return (
     <IonPage>
       <IonContent>
-        <IonSearchbar onIonChange={search} debounce={0} className="recipe-searchbar" />
-        {recipes.filter(recipe => recipe.name.toLowerCase().includes(filter) || recipe.ingredients.some(ingredient => ingredient.toLowerCase().includes(filter)) || recipe.tags.some(tag => tag.toLowerCase().includes(filter))).map((recipe, index) => {
-          return (
-            <IonCard key={recipe.id} routerLink={"/recipes/" + recipe.id}>
-              <img src={recipe.image} alt={recipe.name} className="recipe-img" />
-              <IonCardHeader className="recipe-header">
-                <IonCardTitle className="recipe-title">{recipe.name}</IonCardTitle>
-              </IonCardHeader>
-            </IonCard>
-          )
-        })}
+        <IonSearchbar onIonChange={search} debounce={0} className="recipes-searchbar" />
+        <RecipesList recipes={recipes.filter(recipe => recipe.name.toLowerCase().includes(filter) || recipe.ingredients.some(ingredient => ingredient.name.toLowerCase().includes(filter)) || recipe.tags.some(tag => tag.name.toLowerCase().includes(filter)))} />
       </IonContent>
     </IonPage>
   );
