@@ -48,9 +48,11 @@ const Recipe: React.FC<RouteProps> = ({ match }) => {
 
           {recipe?.tags.map((tag, index) => {
             return (
-              <IonChip key={index}>
-                <IonLabel>{tag.name.replace(/./, c => c.toUpperCase())}</IonLabel>
-              </IonChip>
+              <IonRouterLink key={index} routerLink={'/tags/' + tag.id} className="no-layout">
+                <IonChip>
+                  <IonLabel>{tag.name.replace(/./, c => c.toUpperCase())}</IonLabel>
+                </IonChip>
+              </IonRouterLink>
             )
           })}
         </div>
