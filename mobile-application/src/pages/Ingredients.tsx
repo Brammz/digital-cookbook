@@ -1,15 +1,24 @@
 import React from 'react';
-import { IonContent, IonHeader, IonItem, IonItemDivider, IonLabel, IonList, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonContent, IonHeader, IonItemGroup, IonItem, IonItemDivider, IonLabel, IonList, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import { ingredients } from './../data';
 
 const Ingredients: React.FC = () => {
-  const alphabeticIngredientList = Array<Object>();
-
+  let alphabeticIngredientList = Array<Object>();
+  let currentGroup = Array<Object>();
   let currentLetter = '';
+  // appel, banaan, bes, mango, sinaasappel
   ingredients.sort((a,b) => a.name > b.name ? 1 : -1).forEach((ingredient, index) => {
     if (ingredient.name.charAt(0) !== currentLetter) {
+      if (index !== 0) {
+        alphabeticIngredientList.push(
+          <IonItemGroup key={currentLetter}>
+            {currentGroup}
+          </IonItemGroup>
+        );
+      }
       currentLetter = ingredient.name.charAt(0);
-      alphabeticIngredientList.push(
+      currentGroup = Array<Object>();
+      currentGroup.push(
         <IonItemDivider key={currentLetter}>
           <IonLabel>
             {currentLetter.toUpperCase()}
@@ -17,7 +26,7 @@ const Ingredients: React.FC = () => {
         </IonItemDivider>
       )
     }
-    alphabeticIngredientList.push(
+    currentGroup.push(
       <IonItem key={index} routerLink={'/ingredients/' + ingredient.id}>
         <IonLabel>
           {ingredient.name.replace(/./, c => c.toUpperCase())}
