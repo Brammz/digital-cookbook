@@ -1,12 +1,12 @@
 import React from 'react';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 
-const About: React.FC = () => {
+const ShoppingCart: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>About</IonTitle>
+          <IonTitle>Shopping Cart</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent></IonContent>
@@ -14,4 +14,4 @@ const About: React.FC = () => {
   );
 };
 
-export default About;
+export default ShoppingCart;

@@ -1,21 +1,21 @@
 import React from 'react';
 import { IonContent, IonHeader, IonItemGroup, IonItem, IonItemDivider, IonLabel, IonList, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import { ingredients } from './../data';
+import { tags } from './../data';
 
-const Ingredients: React.FC = () => {
-  let alphabeticIngredientList = Array<Object>();
+const Tags: React.FC = () => {
+  let alphabeticTagList = Array<Object>();
   let currentGroup = Array<Object>();
   let currentLetter = '';
-  ingredients.sort((a,b) => a.name > b.name ? 1 : -1).forEach((ingredient, index) => {
-    if (ingredient.name.charAt(0) !== currentLetter) {
+  tags.sort((a,b) => a.name > b.name ? 1 : -1).forEach((tag, index) => {
+    if (tag.name.charAt(0) !== currentLetter) {
       if (index !== 0) {
-        alphabeticIngredientList.push(
+        alphabeticTagList.push(
           <IonItemGroup key={currentLetter}>
             {currentGroup}
           </IonItemGroup>
         );
       }
-      currentLetter = ingredient.name.charAt(0);
+      currentLetter = tag.name.charAt(0);
       currentGroup = Array<Object>();
       currentGroup.push(
         <IonItemDivider key={currentLetter}>
@@ -26,14 +26,14 @@ const Ingredients: React.FC = () => {
       )
     }
     currentGroup.push(
-      <IonItem key={index} routerLink={'/ingredients/' + ingredient.id}>
+      <IonItem key={index} routerLink={'/tags/' + tag.id}>
         <IonLabel>
-          {ingredient.name.replace(/./, c => c.toUpperCase())}
+          {tag.name.replace(/./, c => c.toUpperCase())}
         </IonLabel>
       </IonItem>
     );
   });
-  alphabeticIngredientList.push(
+  alphabeticTagList.push(
     <IonItemGroup key={currentLetter}>
       {currentGroup}
     </IonItemGroup>
@@ -43,16 +43,16 @@ const Ingredients: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Ingredients</IonTitle>
+          <IonTitle>Tags</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
         <IonList>
-          {alphabeticIngredientList}
+          {alphabeticTagList}
         </IonList>
       </IonContent>
     </IonPage>
   );
 };
 
-export default Ingredients;
+export default Tags;

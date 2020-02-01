@@ -2,12 +2,14 @@ import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { book, nutrition, informationCircleOutline } from 'ionicons/icons';
+import { book, nutrition, pricetags, cart } from 'ionicons/icons';
 import Recipes from './pages/Recipes';
 import Recipe from './pages/Recipe';
 import Ingredients from './pages/Ingredients';
 import Ingredient from './pages/Ingredient';
-import About from './pages/About';
+import Tags from './pages/Tags';
+import Tag from './pages/Tag';
+import ShoppingCart from './pages/ShoppingCart';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -40,7 +42,9 @@ const App: React.FC = () => (
           <Route path="/recipes/:id" component={Recipe} />
           <Route path="/ingredients" component={Ingredients} exact={true} />
           <Route path="/ingredients/:id" component={Ingredient} />
-          <Route path="/about" component={About} />
+          <Route path="/tags" component={Tags} exact={true} />
+          <Route path="/tags/:id" component={Tag} />
+          <Route path="/cart" component={ShoppingCart} />
           <Route path="/" render={() => <Redirect to="/recipes" />} exact={true} />
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
@@ -52,9 +56,13 @@ const App: React.FC = () => (
             <IonIcon icon={nutrition} />
             <IonLabel>Ingredients</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="about" href="/about">
-            <IonIcon icon={informationCircleOutline} />
-            <IonLabel>About</IonLabel>
+          <IonTabButton tab="tags" href="/tags">
+            <IonIcon icon={pricetags} />
+            <IonLabel>Tags</IonLabel>
+          </IonTabButton>
+          <IonTabButton tab="cart" href="/cart">
+            <IonIcon icon={cart} />
+            <IonLabel>Cart</IonLabel>
           </IonTabButton>
         </IonTabBar>
       </IonTabs>
