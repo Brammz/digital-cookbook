@@ -1,9 +1,13 @@
 import React, { useState }   from 'react';
 import { IonPage, IonContent, IonSearchbar } from '@ionic/react';
+import { Recipe } from './../types';
 import RecipesList from './RecipesList';
-import recipes from './../data';
 
-const Recipes: React.FC = () => {
+type ComponentProps = {
+  recipes: Recipe[]
+};
+
+const Recipes: React.FC<ComponentProps> = ({ recipes }) => {
   const [filter, setFilter] = useState('');
 
   const search = (e: any) => {

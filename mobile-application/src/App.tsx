@@ -96,10 +96,11 @@ const App: React.FC = () => {
     (recipesResponse?.data?.values || []).slice(1).forEach(recipe => {
       let ingredients = Array<Ingredient>();
       JSON.parse(recipe[2]).forEach((i: any) => {
-        ingredients.push({
-          ...i,
-          ingredient: processedIngredients.find(pi => pi.id === i.id) || new Ingredient(9999, 'Ingredient not found')
-        });
+        // ingredients.push({
+        //   ...i,
+        //   ingredient: processedIngredients.find(pi => pi.id === i.id) || new Ingredient(9999, 'Ingredient not found')
+        // });
+        ingredients.push(processedIngredients.find(pi => pi.id === i.id) || new Ingredient(9999, 'Ingredient not found'));
       });
 
       let tags = Array<Tag>();
@@ -118,14 +119,14 @@ const App: React.FC = () => {
       <IonReactRouter>
         <IonTabs>
           <IonRouterOutlet>
-            <Route path="/recipes" component={Recipes} exact={true} />
-            <Route path="/recipes/:id" component={RecipeDetails} />
-            <Route path="/ingredients" component={Ingredients} exact={true} />
-            <Route path="/ingredients/:id" component={IngredientDetails} />
-            <Route path="/tags" component={Tags} exact={true} />
-            <Route path="/tags/:id" component={TagDetails} />
-            <Route path="/cart" component={ShoppingCart} />
-            <Route path="/" render={() => <Redirect to="/recipes" />} exact={true} />
+            <Route path="/recipes" exact={true} render={() => <Recipes recipes={recipes} />} />
+            <Route path="/recipes/:id" exact={true} render={(props) => <RecipeDetails {...props} recipes={recipes} />} />
+            <Route path="/ingredients" exact={true} render={() => <Ingredients ingredients={ingredients} />} />
+            <Route path="/ingredients/:id" exact={true} render={(props) => <IngredientDetails {...props} recipes={recipes} ingredients={ingredients} />} />
+            <Route path="/tags" exact={true} render={() => <Tags tags={tags} />} />
+            <Route path="/tags/:id" exact={true} render={(props) => <TagDetails {...props} recipes={recipes} tags={tags} />} />
+            <Route path="/cart" exact={true} render={() => <ShoppingCart />} />
+            <Route path="/" exact={true} render={() => <Redirect to="/recipes" />} />
           </IonRouterOutlet>
           <IonTabBar slot="bottom">
             <IonTabButton tab="recipes" href="/recipes">

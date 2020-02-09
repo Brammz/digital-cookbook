@@ -1,12 +1,19 @@
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { IonBackButton, IonButtons, IonHeader, IonPage, IonToolbar, IonTitle, IonContent } from '@ionic/react';
+import { Recipe, Ingredient } from './../types';
 import RecipesList from './RecipesList';
-import { recipes, ingredients } from './../data';
 
-type RouteProps = RouteComponentProps<{ id?: string }>
+type RouteProps = RouteComponentProps<{ id?: string }>;
 
-const Ingredient: React.FC<RouteProps> = ({ match }) => {
+type ComponentProps = {
+  recipes: Recipe[],
+  ingredients: Ingredient[]
+};
+
+type CombinedProps = RouteProps & ComponentProps;
+
+const IngredientDetails: React.FC<CombinedProps> = ({ match, recipes, ingredients }) => {
   const ingredient = ingredients.find(ingredient => ingredient.id === Number(match.params.id));
   const filteredRecipes = recipes.filter(recipe => recipe.ingredients.some(i => i.id === ingredient?.id));
 
@@ -27,4 +34,4 @@ const Ingredient: React.FC<RouteProps> = ({ match }) => {
   );
 };
 
-export default Ingredient;
+export default IngredientDetails;

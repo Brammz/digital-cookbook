@@ -1,8 +1,12 @@
 import React from 'react';
 import { IonContent, IonHeader, IonItemGroup, IonItem, IonItemDivider, IonLabel, IonList, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import { ingredients } from './../data';
+import { Ingredient } from './../types';
 
-const Ingredients: React.FC = () => {
+type ComponentProps = {
+  ingredients: Ingredient[]
+};
+
+const Ingredients: React.FC<ComponentProps> = ({ ingredients }) => {
   let alphabeticIngredientList = Array<Object>();
   let currentGroup = Array<Object>();
   let currentLetter = '';

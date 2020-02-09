@@ -1,12 +1,19 @@
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { IonBackButton, IonButtons, IonHeader, IonPage, IonToolbar, IonTitle, IonContent } from '@ionic/react';
+import { Recipe, Tag } from './../types';
 import RecipesList from './RecipesList';
-import { recipes, tags } from './../data';
 
-type RouteProps = RouteComponentProps<{ id?: string }>
+type RouteProps = RouteComponentProps<{ id?: string }>;
 
-const Tag: React.FC<RouteProps> = ({ match }) => {
+type ComponentProps = {
+  recipes: Recipe[],
+  tags: Tag[]
+};
+
+type CombinedProps = RouteProps & ComponentProps;
+
+const TagDetails: React.FC<CombinedProps> = ({ match, recipes, tags }) => {
   const tag = tags.find(tag => tag.id === Number(match.params.id));
   const filteredRecipes = recipes.filter(recipe => recipe.tags.some(t => t.id === tag?.id));
 
@@ -27,4 +34,4 @@ const Tag: React.FC<RouteProps> = ({ match }) => {
   );
 };
 
-export default Tag;
+export default TagDetails;

@@ -1,8 +1,12 @@
 import React from 'react';
 import { IonContent, IonHeader, IonItemGroup, IonItem, IonItemDivider, IonLabel, IonList, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import { tags } from './../data';
+import { Tag } from './../types';
 
-const Tags: React.FC = () => {
+type ComponentProps = {
+  tags: Tag[]
+};
+
+const Tags: React.FC<ComponentProps> = ({ tags }) => {
   let alphabeticTagList = Array<Object>();
   let currentGroup = Array<Object>();
   let currentLetter = '';
