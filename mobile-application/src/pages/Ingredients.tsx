@@ -10,8 +10,8 @@ const Ingredients: React.FC<ComponentProps> = ({ ingredients }) => {
   let alphabeticIngredientList = Array<Object>();
   let currentGroup = Array<Object>();
   let currentLetter = '';
-  ingredients.sort((a,b) => a.name > b.name ? 1 : -1).forEach((ingredient, index) => {
-    if (ingredient.name.charAt(0) !== currentLetter) {
+  ingredients.sort((a,b) => a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1).forEach((ingredient, index) => {
+    if (ingredient.name.charAt(0).toUpperCase() !== currentLetter) {
       if (index !== 0) {
         alphabeticIngredientList.push(
           <IonItemGroup key={currentLetter}>
@@ -19,12 +19,12 @@ const Ingredients: React.FC<ComponentProps> = ({ ingredients }) => {
           </IonItemGroup>
         );
       }
-      currentLetter = ingredient.name.charAt(0);
+      currentLetter = ingredient.name.charAt(0).toUpperCase();
       currentGroup = Array<Object>();
       currentGroup.push(
         <IonItemDivider key={currentLetter}>
           <IonLabel>
-            {currentLetter.toUpperCase()}
+            {currentLetter}
           </IonLabel>
         </IonItemDivider>
       )

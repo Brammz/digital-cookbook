@@ -10,8 +10,8 @@ const Tags: React.FC<ComponentProps> = ({ tags }) => {
   let alphabeticTagList = Array<Object>();
   let currentGroup = Array<Object>();
   let currentLetter = '';
-  tags.sort((a,b) => a.name > b.name ? 1 : -1).forEach((tag, index) => {
-    if (tag.name.charAt(0) !== currentLetter) {
+  tags.sort((a,b) => a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1).forEach((tag, index) => {
+    if (tag.name.charAt(0).toUpperCase() !== currentLetter) {
       if (index !== 0) {
         alphabeticTagList.push(
           <IonItemGroup key={currentLetter}>
@@ -19,12 +19,12 @@ const Tags: React.FC<ComponentProps> = ({ tags }) => {
           </IonItemGroup>
         );
       }
-      currentLetter = tag.name.charAt(0);
+      currentLetter = tag.name.charAt(0).toUpperCase();
       currentGroup = Array<Object>();
       currentGroup.push(
         <IonItemDivider key={currentLetter}>
           <IonLabel>
-            {currentLetter.toUpperCase()}
+            {currentLetter}
           </IonLabel>
         </IonItemDivider>
       )
