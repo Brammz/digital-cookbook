@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
+import { IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react';
 import { book, nutrition, pricetags, cart } from 'ionicons/icons';
-import { Recipe, Ingredient, Tag } from './types';
+import { Recipe, IngredientInRecipe, Ingredient, Tag } from './types';
 import Recipes from './pages/Recipes';
 import RecipeDetails from './pages/RecipeDetails';
 import Ingredients from './pages/Ingredients';
@@ -94,13 +94,13 @@ const App: React.FC = () => {
     let processedRecipes = Array<Recipe>();
 
     (recipesResponse?.data?.values || []).slice(1).forEach(recipe => {
-      let ingredients = Array<Ingredient>();
+      let ingredients = Array<IngredientInRecipe>();
       JSON.parse(recipe[2]).forEach((i: any) => {
-        // ingredients.push({
-        //   ...i,
-        //   ingredient: processedIngredients.find(pi => pi.id === i.id) || new Ingredient(9999, 'Ingredient not found')
-        // });
-        ingredients.push(processedIngredients.find(pi => pi.id === i.id) || new Ingredient(9999, 'Ingredient not found'));
+        ingredients.push({
+          ingredient: processedIngredients.find(pi => pi.id === i.id) || new Ingredient(9999, 'Ingredient not found'),
+          amount: i.amount,
+          unit: i.unit
+        });
       });
 
       let tags = Array<Tag>();

@@ -15,7 +15,7 @@ type CombinedProps = RouteProps & ComponentProps;
 
 const IngredientDetails: React.FC<CombinedProps> = ({ match, recipes, ingredients }) => {
   const ingredient = ingredients.find(ingredient => ingredient.id === Number(match.params.id));
-  const filteredRecipes = recipes.filter(recipe => recipe.ingredients.some(i => i.id === ingredient?.id));
+  const filteredRecipes = recipes.filter(recipe => recipe.ingredients.some(i => i.ingredient.id === ingredient?.id));
 
   return (
     <IonPage>

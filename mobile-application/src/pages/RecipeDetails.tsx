@@ -33,8 +33,8 @@ const RecipeDetails: React.FC<CombinedProps> = ({ match, recipes }) => {
             {recipe?.ingredients.map((ingredient, index) => {
               return (
                 <li key={index}>
-                  <IonRouterLink routerLink={'/ingredients/' + ingredient.id} className="no-layout">
-                    {ingredient.name.replace(/./, c => c.toUpperCase())}
+                  <IonRouterLink routerLink={'/ingredients/' + ingredient.ingredient.id} className="no-layout">
+                    {ingredient.ingredient.name.replace(/./, c => c.toUpperCase())}
                   </IonRouterLink>
                 </li>
               )

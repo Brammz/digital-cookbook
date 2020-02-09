@@ -18,7 +18,7 @@ const Recipes: React.FC<ComponentProps> = ({ recipes }) => {
     <IonPage>
       <IonContent>
         <IonSearchbar onIonChange={search} debounce={0} className="recipes-searchbar" />
-        <RecipesList recipes={recipes.filter(recipe => recipe.name.toLowerCase().includes(filter) || recipe.ingredients.some(ingredient => ingredient.name.toLowerCase().includes(filter)) || recipe.tags.some(tag => tag.name.toLowerCase().includes(filter)))} />
+        <RecipesList recipes={recipes.filter(recipe => recipe.name.toLowerCase().includes(filter) || recipe.ingredients.some(ingredient => ingredient.ingredient.name.toLowerCase().includes(filter)) || recipe.tags.some(tag => tag.name.toLowerCase().includes(filter)))} />
       </IonContent>
     </IonPage>
   );
