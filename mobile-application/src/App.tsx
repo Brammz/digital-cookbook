@@ -41,9 +41,9 @@ const client = new google.auth.JWT(credentials.client_email, '', credentials.pri
 const sheets = google.sheets('v4');
 
 const App: React.FC = () => {
-  const [recipes, setRecipes] = useState([]);
-  const [ingredients, setIngredients] = useState([]);
-  const [tags, setTags] = useState([]);
+  const [recipes, setRecipes] = useState(Array<Recipe>());
+  const [ingredients, setIngredients] = useState(Array<Ingredient>());
+  const [tags, setTags] = useState(Array<Tag>());
 
   useEffect(() => {
     console.log('first effect')
@@ -53,90 +53,64 @@ const App: React.FC = () => {
   async function fetchData() {
     // fetch ingredients
     const ingredientsResponse = await sheets.spreadsheets.values.get({
-        auth: client,
-        spreadsheetId: credentials.sheet_id,
-        range: 'Ingredients',
-        majorDimension: 'ROWS'
+      auth: client,
+      spreadsheetId: credentials.sheet_id,
+      range: 'Ingredients',
+      majorDimension: 'ROWS'
     });
 
-    let ingredientsHeaders = (ingredientsResponse?.data?.values || [])[0];
-    let ingredientsRows = (ingredientsResponse?.data?.values || []).slice(1);
+    let processedIngredients = Array<Ingredient>();
 
-    let processedIngredients = Array<Object>();
-
-    ingredientsRows.forEach(ingredient => {
-      let processed = ingredient.reduce((acc, curr, i) => {
-        if (ingredientsHeaders[i] === 'id') {
-          acc[ingredientsHeaders[i]] = Number(curr);
-        } else {
-          acc[ingredientsHeaders[i]] = curr;
-        }
-        return acc;
-      }, {});
-      processedIngredients.push(processed);
+    (ingredientsResponse?.data?.values || []).slice(1).forEach(ingredient => {
+      processedIngredients.push(new Ingredient(Number(ingredient[0]), ingredient[1]));
     });
 
-    console.log('processedIngredients :', processedIngredients);
+    setIngredients(processedIngredients);
 
     // fetch tags
     const tagsResponse = await sheets.spreadsheets.values.get({
-        auth: client,
-        spreadsheetId: credentials.sheet_id,
-        range: 'Tags',
-        majorDimension: 'ROWS'
+      auth: client,
+      spreadsheetId: credentials.sheet_id,
+      range: 'Tags',
+      majorDimension: 'ROWS'
     });
 
-    let tagsHeaders = (tagsResponse?.data?.values || [])[0];
-    let tagsRows = (tagsResponse?.data?.values || []).slice(1);
+    let processedTags = Array<Tag>();
 
-    let processedTags = Array<Object>();
-
-    tagsRows.forEach(tag => {
-      let processed = tag.reduce((acc, curr, i) => {
-        if (ingredientsHeaders[i] === 'id') {
-          acc[tagsHeaders[i]] = Number(curr);
-        } else {
-          acc[tagsHeaders[i]] = curr;
-        }
-        return acc;
-      }, {});
-      processedTags.push(processed);
+    (tagsResponse?.data?.values || []).slice(1).forEach(tag => {
+      processedTags.push(new Tag(Number(tag[0]), tag[1]));
     });
 
-    console.log('processedTags :', processedTags);
+    setTags(processedTags);
 
     // fetch recipes
     const recipesResponse = await sheets.spreadsheets.values.get({
-        auth: client,
-        spreadsheetId: credentials.sheet_id,
-        range: 'Recipes',
-        majorDimension: 'ROWS'
+      auth: client,
+      spreadsheetId: credentials.sheet_id,
+      range: 'Recipes',
+      majorDimension: 'ROWS'
     });
 
-    let recipesHeaders = (recipesResponse?.data?.values || [])[0];
-    let recipesRows = (recipesResponse?.data?.values || []).slice(1);
+    let processedRecipes = Array<Recipe>();
 
-    let processedRecipes = Array<Object>();
+    (recipesResponse?.data?.values || []).slice(1).forEach(recipe => {
+      let ingredients = Array<Ingredient>();
+      JSON.parse(recipe[2]).forEach((i: any) => {
+        ingredients.push({
+          ...i,
+          ingredient: processedIngredients.find(pi => pi.id === i.id) || new Ingredient(9999, 'Ingredient not found')
+        });
+      });
 
-    recipesRows.forEach(recipe => {
-      let processed = recipe.reduce((acc, curr, i) => {
-        if (recipesHeaders[i] === 'ingredients') {
-          let ingrs = JSON.parse(curr);
-          ingrs.forEach((ingr: any) => {
-            ingr.name = processedIngredients.find((pi: any) => pi.id === ingr.id);
-          });
-          acc[recipesHeaders[i]] = ingrs;
-        } else if (recipesHeaders[i] === 'tags') {
-          acc[recipesHeaders[i]] = JSON.parse(curr);
-        } else {
-          acc[recipesHeaders[i]] = curr;
-        }
-        return acc;
-      }, {});
-      processedRecipes.push(processed);
+      let tags = Array<Tag>();
+      JSON.parse(recipe[3]).forEach((t: any) => {
+        tags.push(processedTags.find(pt => pt.id === t) || new Tag(9999, 'Tag not found'));
+      });
+
+      processedRecipes.push(new Recipe(Number(recipe[0]), recipe[1], ingredients, tags, recipe[4], recipe[5]));
     });
 
-    console.log('processedRecipes :', processedRecipes);
+    setRecipes(processedRecipes);
   }
 
   return (
