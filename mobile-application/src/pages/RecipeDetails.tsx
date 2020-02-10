@@ -31,7 +31,7 @@ const RecipeDetails: React.FC<CombinedProps> = ({ match, recipes }) => {
         <div className="text-container">
           <h1>Ingrediënten</h1>
           <IonGrid>
-            {recipe?.ingredients.map((ingredient, index) => {
+            {recipe?.ingredients.sort((a,b) => a.ingredient.name.toLowerCase() > b.ingredient.name.toLowerCase() ? 1 : -1).map((ingredient, index) => {
               return (
                 <IonRouterLink key={index} routerLink={'/ingredients/' + ingredient.ingredient.id} className="no-layout">
                   <IonRow className={recipe?.ingredients.length-1 !== index ? "ingredient-row row-border" : "ingredient-row"}>
