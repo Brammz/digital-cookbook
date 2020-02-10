@@ -32,6 +32,21 @@
   color: inherit;
 }
 
+.ingredient-row {
+  padding: 5px 10px;
+}
+
+.row-border {
+  background-image: linear-gradient(to right, black 20%, rgba(255,255,255,0) 0%);
+  background-position: bottom;
+  background-size: 5px 1px;
+  background-repeat: repeat-x;
+}
+
+.ingredient-details {
+  text-align: right;
+}
+
 .divider {
   background-color: lightgrey;
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { IonBackButton, IonButtons, IonHeader, IonPage, IonToolbar, IonTitle, IonContent, IonFab, IonFabButton, IonIcon, IonChip, IonLabel, IonRouterLink } from '@ionic/react';
+import { IonBackButton, IonButtons, IonHeader, IonPage, IonToolbar, IonTitle, IonContent, IonFab, IonFabButton, IonIcon, IonChip,
+          IonLabel, IonRouterLink, IonGrid, IonRow, IonCol } from '@ionic/react';
 import { basket } from 'ionicons/icons';
 import { Recipe } from './../types';
 
@@ -29,17 +30,27 @@ const RecipeDetails: React.FC<CombinedProps> = ({ match, recipes }) => {
         <img src={recipe?.image} alt={recipe?.name} className="recipe-img" />
         <div className="text-container">
           <h1>Ingrediënten</h1>
-          <ul>
+          <IonGrid>
             {recipe?.ingredients.map((ingredient, index) => {
               return (
-                <li key={index}>
-                  <IonRouterLink routerLink={'/ingredients/' + ingredient.ingredient.id} className="no-layout">
-                    {ingredient.ingredient.name.replace(/./, c => c.toUpperCase())}
-                  </IonRouterLink>
-                </li>
+                <IonRouterLink key={index} routerLink={'/ingredients/' + ingredient.ingredient.id} className="no-layout">
+                  <IonRow className={recipe?.ingredients.length-1 !== index ? "ingredient-row row-border" : "ingredient-row"}>
+                    <IonCol>
+                      {ingredient.ingredient.name.replace(/./, c => c.toUpperCase())}
+                    </IonCol>
+                    <IonCol className="ingredient-details">
+                      {(() => {
+                        switch(ingredient.unit) {
+                          case '#': return `${ingredient.amount}`;
+                          default: return `${ingredient.amount}${ingredient.unit}`;
+                        }
+                      })()}
+                    </IonCol>
+                  </IonRow>
+                </IonRouterLink>
               )
             })}
-          </ul>
+          </IonGrid>
 
           <hr className="divider" />
 
