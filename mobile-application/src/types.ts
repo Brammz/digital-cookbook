@@ -48,9 +48,28 @@ class Tag {
   }
 }
 
+class ShoppingIngredient {
+  id: number;
+  name: string;
+  amount: number;
+  unit: string;
+
+  constructor(id: number, name: string, amount: number, unit: string) {
+    this.id = id;
+    this.name = name;
+    this.amount = amount;
+    this.unit = unit;
+  }
+
+  addAmount(amount: number) {
+    this.amount += amount;
+  }
+}
+
 export {
 	Recipe,
   IngredientInRecipe,
 	Ingredient,
-	Tag
+	Tag,
+  ShoppingIngredient
 };

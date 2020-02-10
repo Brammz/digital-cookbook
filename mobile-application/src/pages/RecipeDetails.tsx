@@ -3,17 +3,18 @@ import { RouteComponentProps } from 'react-router-dom';
 import { IonBackButton, IonButtons, IonButton, IonHeader, IonPage, IonToolbar, IonTitle, IonContent, IonFab, IonFabButton, IonIcon,
           IonChip, IonLabel, IonRouterLink, IonGrid, IonRow, IonCol, IonItem } from '@ionic/react';
 import { basket, removeCircle, addCircle } from 'ionicons/icons';
-import { Recipe } from './../types';
+import { Recipe, IngredientInRecipe } from './../types';
 
 type RouteProps = RouteComponentProps<{ id?: string }>;
 
 type ComponentProps = {
-  recipes: Recipe[]
+  recipes: Recipe[],
+  addToCart: (items: IngredientInRecipe[], persons: number) => void;
 };
 
 type CombinedProps = RouteProps & ComponentProps;
 
-const RecipeDetails: React.FC<CombinedProps> = ({ match, recipes }) => {
+const RecipeDetails: React.FC<CombinedProps> = ({ match, recipes, addToCart }) => {
   const [persons, setPersons] = useState(2);
   const recipe = recipes.find(recipe => recipe.id === Number(match.params.id));
 
@@ -35,19 +36,19 @@ const RecipeDetails: React.FC<CombinedProps> = ({ match, recipes }) => {
               <h1>Ingrediënten</h1>
               <IonGrid>
                 <IonRow>
-                  <IonCol size="3" className="no-padding"></IonCol>
-                  <IonCol size="6" className="no-padding">
+                  <IonCol size="2" className="no-padding"></IonCol>
+                  <IonCol size="8" className="no-padding">
                     <IonItem lines="none">
-                      <IonButton fill="clear" onClick={() => setPersons(persons-1)}>
+                      <IonButton size="large" fill="clear" onClick={() => setPersons(persons-1)}>
                         <IonIcon icon={removeCircle} />
                       </IonButton>
-                      <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{persons}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                      <IonButton fill="clear" onClick={() => setPersons(persons+1)}>
+                      <span>&nbsp;&nbsp;&nbsp;{persons}&nbsp;&nbsp;&nbsp;</span>
+                      <IonButton size="large" fill="clear" onClick={() => setPersons(persons+1)}>
                         <IonIcon icon={addCircle} />
                       </IonButton>
                     </IonItem>
                   </IonCol>
-                  <IonCol size="3" className="no-padding"></IonCol>
+                  <IonCol size="2" className="no-padding"></IonCol>
                 </IonRow>
                 {recipe?.ingredients.sort((a,b) => a.ingredient.name.toLowerCase() > b.ingredient.name.toLowerCase() ? 1 : -1).map((ingredient, index) => {
                   return (
@@ -95,7 +96,7 @@ const RecipeDetails: React.FC<CombinedProps> = ({ match, recipes }) => {
           })}
         </div>
         <IonFab vertical="bottom" horizontal="end" slot="fixed">
-          <IonFabButton>
+          <IonFabButton onClick={() => addToCart(recipe?.ingredients || new Array<IngredientInRecipe>(), persons)}>
             <IonIcon icon={basket} />
           </IonFabButton>
         </IonFab>

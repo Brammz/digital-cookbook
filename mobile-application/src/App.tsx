@@ -3,7 +3,7 @@ import { Redirect, Route } from 'react-router-dom';
 import { IonReactRouter } from '@ionic/react-router';
 import { IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react';
 import { book, nutrition, pricetags, cart } from 'ionicons/icons';
-import { Recipe, IngredientInRecipe, Ingredient, Tag } from './types';
+import { Recipe, IngredientInRecipe, Ingredient, Tag, ShoppingIngredient } from './types';
 import Recipes from './pages/Recipes';
 import RecipeDetails from './pages/RecipeDetails';
 import Ingredients from './pages/Ingredients';
@@ -44,6 +44,7 @@ const App: React.FC = () => {
   const [recipes, setRecipes] = useState(Array<Recipe>());
   const [ingredients, setIngredients] = useState(Array<Ingredient>());
   const [tags, setTags] = useState(Array<Tag>());
+  const [shoppingList, setShoppingList] = useState(Array<ShoppingIngredient>());
 
   useEffect(() => {
     console.log('first effect')
@@ -114,13 +115,25 @@ const App: React.FC = () => {
     setRecipes(processedRecipes);
   }
 
+  function addToCart(items: IngredientInRecipe[], persons: number) {
+    console.log('adding', items, persons);
+    // items.forEach(item => {
+    //   let existingItem = shoppingList.find(si => si.ingredient.id === item.ingredient.id && si.unit === item.unit);
+    //   if (existingItem) {
+    //     existingItem.amount += item.amount; 
+    //   } else {
+    //     console.log('new item');
+    //   }
+    // });
+  }
+
   return (
     <IonApp>
       <IonReactRouter>
         <IonTabs>
           <IonRouterOutlet>
             <Route path="/recipes" exact={true} render={() => <Recipes recipes={recipes} />} />
-            <Route path="/recipes/:id" exact={true} render={(props) => <RecipeDetails {...props} recipes={recipes} />} />
+            <Route path="/recipes/:id" exact={true} render={(props) => <RecipeDetails {...props} recipes={recipes} addToCart={addToCart} />} />
             <Route path="/ingredients" exact={true} render={() => <Ingredients ingredients={ingredients} />} />
             <Route path="/ingredients/:id" exact={true} render={(props) => <IngredientDetails {...props} recipes={recipes} ingredients={ingredients} />} />
             <Route path="/tags" exact={true} render={() => <Tags tags={tags} />} />
