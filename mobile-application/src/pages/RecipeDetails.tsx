@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { IonBackButton, IonButtons, IonHeader, IonPage, IonToolbar, IonTitle, IonContent, IonFab, IonFabButton, IonIcon, IonChip,
-          IonLabel, IonRouterLink, IonGrid, IonRow, IonCol } from '@ionic/react';
-import { basket } from 'ionicons/icons';
+import { IonBackButton, IonButtons, IonButton, IonHeader, IonPage, IonToolbar, IonTitle, IonContent, IonFab, IonFabButton, IonIcon,
+          IonChip, IonLabel, IonRouterLink, IonGrid, IonRow, IonCol, IonItem } from '@ionic/react';
+import { basket, removeCircle, addCircle } from 'ionicons/icons';
 import { Recipe } from './../types';
 
 type RouteProps = RouteComponentProps<{ id?: string }>;
@@ -14,6 +14,7 @@ type ComponentProps = {
 type CombinedProps = RouteProps & ComponentProps;
 
 const RecipeDetails: React.FC<CombinedProps> = ({ match, recipes }) => {
+  const [persons, setPersons] = useState(2);
   const recipe = recipes.find(recipe => recipe.id === Number(match.params.id));
 
   return (
@@ -29,30 +30,50 @@ const RecipeDetails: React.FC<CombinedProps> = ({ match, recipes }) => {
       <IonContent>
         <img src={recipe?.image} alt={recipe?.name} className="recipe-img" />
         <div className="text-container">
-          <h1>Ingrediënten</h1>
-          <IonGrid>
-            {recipe?.ingredients.sort((a,b) => a.ingredient.name.toLowerCase() > b.ingredient.name.toLowerCase() ? 1 : -1).map((ingredient, index) => {
-              return (
-                <IonRouterLink key={index} routerLink={'/ingredients/' + ingredient.ingredient.id} className="no-layout">
-                  <IonRow className={recipe?.ingredients.length-1 !== index ? "ingredient-row row-border" : "ingredient-row"}>
-                    <IonCol>
-                      {ingredient.ingredient.name.replace(/./, c => c.toUpperCase())}
-                    </IonCol>
-                    <IonCol className="ingredient-details">
-                      {(() => {
-                        switch(ingredient.unit) {
-                          case '#': return `${ingredient.amount}`;
-                          default: return `${ingredient.amount}${ingredient.unit}`;
-                        }
-                      })()}
-                    </IonCol>
-                  </IonRow>
-                </IonRouterLink>
-              )
-            })}
-          </IonGrid>
+          {recipe?.ingredients.length !== 0 && (
+            <>
+              <h1>Ingrediënten</h1>
+              <IonGrid>
+                <IonRow>
+                  <IonCol size="3" className="no-padding"></IonCol>
+                  <IonCol size="6" className="no-padding">
+                    <IonItem lines="none">
+                      <IonButton fill="clear" onClick={() => setPersons(persons-1)}>
+                        <IonIcon icon={removeCircle} />
+                      </IonButton>
+                      <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{persons}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                      <IonButton fill="clear" onClick={() => setPersons(persons+1)}>
+                        <IonIcon icon={addCircle} />
+                      </IonButton>
+                    </IonItem>
+                  </IonCol>
+                  <IonCol size="3" className="no-padding"></IonCol>
+                </IonRow>
+                {recipe?.ingredients.sort((a,b) => a.ingredient.name.toLowerCase() > b.ingredient.name.toLowerCase() ? 1 : -1).map((ingredient, index) => {
+                  return (
+                    <IonRouterLink key={index} routerLink={'/ingredients/' + ingredient.ingredient.id} className="no-layout">
+                      <IonRow className={recipe?.ingredients.length-1 !== index ? "ingredient-row row-border" : "ingredient-row"}>
+                        <IonCol>
+                          {ingredient.ingredient.name.replace(/./, c => c.toUpperCase())}
+                        </IonCol>
+                        <IonCol className="text-right">
+                          {(() => {
+                            let amount = Math.round(((ingredient.amount / 4 * persons) + Number.EPSILON) * 100) / 100;
+                            switch(ingredient.unit) {
+                              case '#': return `${amount}`;
+                              default: return `${amount}${ingredient.unit}`;
+                            }
+                          })()}
+                        </IonCol>
+                      </IonRow>
+                    </IonRouterLink>
+                  )
+                })}
+              </IonGrid>
 
-          <hr className="divider" />
+              <hr className="divider" />
+            </>
+          )}
 
           <h1>Bereiding</h1>
           <ol>

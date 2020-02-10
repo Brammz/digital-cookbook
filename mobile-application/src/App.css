@@ -1,3 +1,19 @@
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.no-padding {
+  padding: 0;
+}
+
 .recipes-searchbar {
   padding-bottom: 0;
 }
@@ -41,10 +57,6 @@
   background-position: bottom;
   background-size: 5px 1px;
   background-repeat: repeat-x;
-}
-
-.ingredient-details {
-  text-align: right;
 }
 
 .divider {
