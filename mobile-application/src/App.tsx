@@ -116,15 +116,18 @@ const App: React.FC = () => {
   }
 
   function addToCart(items: IngredientInRecipe[], persons: number) {
-    console.log('adding', items, persons);
-    // items.forEach(item => {
-    //   let existingItem = shoppingList.find(si => si.ingredient.id === item.ingredient.id && si.unit === item.unit);
-    //   if (existingItem) {
-    //     existingItem.amount += item.amount; 
-    //   } else {
-    //     console.log('new item');
-    //   }
-    // });
+    let newShoppingList = [...shoppingList];
+
+    items.forEach(item => {
+      let existingItem = newShoppingList.find(sli => sli.id === item.ingredient.id && sli.unit === item.unit);
+      if (!existingItem) {
+        newShoppingList.push(new ShoppingIngredient(item.ingredient.id, item.ingredient.name, (item.amount / 4 * persons), item.unit));
+      } else {
+        existingItem.addAmount(item.amount / 4 * persons);
+      }
+    });
+
+    setShoppingList(newShoppingList);
   }
 
   return (
@@ -138,7 +141,7 @@ const App: React.FC = () => {
             <Route path="/ingredients/:id" exact={true} render={(props) => <IngredientDetails {...props} recipes={recipes} ingredients={ingredients} />} />
             <Route path="/tags" exact={true} render={() => <Tags tags={tags} />} />
             <Route path="/tags/:id" exact={true} render={(props) => <TagDetails {...props} recipes={recipes} tags={tags} />} />
-            <Route path="/cart" exact={true} render={() => <ShoppingCart />} />
+            <Route path="/cart" exact={true} render={() => <ShoppingCart shoppingList={shoppingList} />} />
             <Route path="/" exact={true} render={() => <Redirect to="/recipes" />} />
           </IonRouterOutlet>
           <IonTabBar slot="bottom">

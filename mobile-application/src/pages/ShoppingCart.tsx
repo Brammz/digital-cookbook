@@ -1,7 +1,13 @@
 import React from 'react';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { ShoppingIngredient } from './../types';
 
-const ShoppingCart: React.FC = () => {
+type ComponentProps = {
+  shoppingList: ShoppingIngredient[]
+};
+
+const ShoppingCart: React.FC<ComponentProps> = ({ shoppingList }) => {
+  console.log('shoppingList :', shoppingList);
   return (
     <IonPage>
       <IonHeader>
