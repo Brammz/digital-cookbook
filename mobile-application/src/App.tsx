@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import { IonReactRouter } from '@ionic/react-router';
 import { IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react';
+import { RefresherEventDetail } from '@ionic/core';
 import { book, nutrition, pricetags, cart } from 'ionicons/icons';
 import { Recipe, IngredientInRecipe, Ingredient, Tag, ShoppingIngredient } from './types';
 import Recipes from './pages/Recipes';
@@ -46,15 +47,25 @@ const App: React.FC = () => {
   const [tags, setTags] = useState(Array<Tag>());
   const [shoppingList, setShoppingList] = useState(Array<ShoppingIngredient>());
 
-  useEffect(() => {
-    function shuffle(a: Recipe[]) {
-      for (let i = a.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [a[i], a[j]] = [a[j], a[i]];
-      }
-      return a;
-    }
+  function refresh(event: CustomEvent<RefresherEventDetail>) {
+    setTimeout(() => {
+      event.detail.complete();
+    }, 200);
+    setTimeout(() => {
+      setRecipes(shuffle(recipes));
+    }, 300)
+  }
 
+  function shuffle(recipes: Recipe[]) {
+    let a = [...recipes];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  useEffect(() => {
     fetchData(shuffle);
   }, []);
 
@@ -146,12 +157,12 @@ const App: React.FC = () => {
       <IonReactRouter>
         <IonTabs>
           <IonRouterOutlet>
-            <Route path="/recipes" exact={true} render={() => <Recipes recipes={recipes} />} />
+            <Route path="/recipes" exact={true} render={() => <Recipes recipes={recipes} refresh={refresh} />} />
             <Route path="/recipes/:id" exact={true} render={(props) => <RecipeDetails {...props} recipes={recipes} addToCart={addToCart} />} />
             <Route path="/ingredients" exact={true} render={() => <Ingredients ingredients={ingredients} />} />
-            <Route path="/ingredients/:id" exact={true} render={(props) => <IngredientDetails {...props} recipes={recipes} ingredients={ingredients} />} />
+            <Route path="/ingredients/:id" exact={true} render={(props) => <IngredientDetails {...props} recipes={recipes} ingredients={ingredients} refresh={refresh} />} />
             <Route path="/tags" exact={true} render={() => <Tags tags={tags} />} />
-            <Route path="/tags/:id" exact={true} render={(props) => <TagDetails {...props} recipes={recipes} tags={tags} />} />
+            <Route path="/tags/:id" exact={true} render={(props) => <TagDetails {...props} recipes={recipes} tags={tags} refresh={refresh} />} />
             <Route path="/cart" exact={true} render={() => <ShoppingCart shoppingList={shoppingList} clearShoppingList={clearShoppingList} />} />
             <Route path="/" exact={true} render={() => <Redirect to="/recipes" />} />
           </IonRouterOutlet>
