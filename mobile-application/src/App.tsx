@@ -130,6 +130,10 @@ const App: React.FC = () => {
     setShoppingList(newShoppingList);
   }
 
+  function clearShoppingList() {
+    setShoppingList([]);
+  }
+
   return (
     <IonApp>
       <IonReactRouter>
@@ -141,7 +145,7 @@ const App: React.FC = () => {
             <Route path="/ingredients/:id" exact={true} render={(props) => <IngredientDetails {...props} recipes={recipes} ingredients={ingredients} />} />
             <Route path="/tags" exact={true} render={() => <Tags tags={tags} />} />
             <Route path="/tags/:id" exact={true} render={(props) => <TagDetails {...props} recipes={recipes} tags={tags} />} />
-            <Route path="/cart" exact={true} render={() => <ShoppingCart shoppingList={shoppingList} />} />
+            <Route path="/cart" exact={true} render={() => <ShoppingCart shoppingList={shoppingList} clearShoppingList={clearShoppingList} />} />
             <Route path="/" exact={true} render={() => <Redirect to="/recipes" />} />
           </IonRouterOutlet>
           <IonTabBar slot="bottom">

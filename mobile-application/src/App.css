@@ -10,6 +10,19 @@
   text-align: right;
 }
 
+.maxheight {
+  height: 100%;
+}
+
+.center {
+  /* text-align: center;
+  vertical-align: middle; */
+
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
 .no-padding {
   padding: 0;
 }

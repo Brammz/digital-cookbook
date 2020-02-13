@@ -95,11 +95,13 @@ const RecipeDetails: React.FC<CombinedProps> = ({ match, recipes, addToCart }) =
             )
           })}
         </div>
-        <IonFab vertical="bottom" horizontal="end" slot="fixed">
-          <IonFabButton onClick={() => addToCart(recipe?.ingredients || new Array<IngredientInRecipe>(), persons)}>
-            <IonIcon icon={basket} />
-          </IonFabButton>
-        </IonFab>
+        {recipe?.ingredients.length !== 0 && (
+          <IonFab vertical="bottom" horizontal="end" slot="fixed">
+            <IonFabButton onClick={() => addToCart(recipe?.ingredients || new Array<IngredientInRecipe>(), persons)}>
+              <IonIcon icon={basket} />
+            </IonFabButton>
+          </IonFab>
+        )}
       </IonContent>
     </IonPage>
   );
