@@ -47,11 +47,18 @@ const App: React.FC = () => {
   const [shoppingList, setShoppingList] = useState(Array<ShoppingIngredient>());
 
   useEffect(() => {
-    console.log('first effect')
-    fetchData();
+    function shuffle(a: Recipe[]) {
+      for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    fetchData(shuffle);
   }, []);
 
-  async function fetchData() {
+  async function fetchData(shuffle: (a: Recipe[]) => Recipe[]) {
     // fetch ingredients
     const ingredientsResponse = await sheets.spreadsheets.values.get({
       auth: client,
@@ -112,7 +119,7 @@ const App: React.FC = () => {
       processedRecipes.push(new Recipe(Number(recipe[0]), recipe[1], ingredients, tags, recipe[4], recipe[5]));
     });
 
-    setRecipes(processedRecipes);
+    setRecipes(shuffle(processedRecipes));
   }
 
   function addToCart(items: IngredientInRecipe[], persons: number) {
