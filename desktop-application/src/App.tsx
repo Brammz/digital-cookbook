@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 import { google } from 'googleapis';
 import { Container } from '@material-ui/core';
 import credentials from './credentials.json';
-import { AddRecipe, Ingredients, Navbar, Recipes, RecipeDetails, Tags } from './components';
+import { AddRecipe, Navbar, Recipes, RecipeDetails, SubheaderList } from './components';
 import { Recipe, IngredientInRecipe, Ingredient, Tag } from './types';
 import './App.css';
 
@@ -101,8 +101,8 @@ const App: React.FC = () => {
             <Route path={['/', '/recipes']} exact render={() => <Recipes recipes={recipes} />} />
             <Route path="/recipe/:id" exact render={(props) => <RecipeDetails recipe={recipes.find(r => r.id === parseInt(props.match.params.id))} />} />
             <Route path="/recipe/new" exact render={() => <AddRecipe />}/>
-            <Route path="/ingredients" exact render={() => <Ingredients ingredients={ingredients} />} />
-            <Route path="/tags" exact render={() => <Tags tags={tags} />} />
+            <Route path="/ingredients" exact render={() => <SubheaderList items={ingredients} />} />
+            <Route path="/tags" exact render={() => <SubheaderList items={tags} />} />
             <Redirect to='/' />
           </Switch>
         </Container>
