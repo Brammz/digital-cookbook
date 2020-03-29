@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 import { google } from 'googleapis';
 import { Container } from '@material-ui/core';
 import credentials from './credentials.json';
-import { AddRecipe, Navbar, Recipes, RecipeDetails, SubheaderList } from './components';
+import { AddRecipe, ExtrasDetails, ExtrasList, Navbar, Recipes, RecipeDetails } from './components';
 import { Recipe, IngredientInRecipe, Ingredient, Tag } from './types';
 import './App.css';
 
@@ -101,8 +101,10 @@ const App: React.FC = () => {
             <Route path={['/', '/recipes']} exact render={() => <Recipes recipes={recipes} />} />
             <Route path="/recipe/:id" exact render={(props) => <RecipeDetails recipe={recipes.find(r => r.id === parseInt(props.match.params.id))} />} />
             <Route path="/recipe/new" exact render={() => <AddRecipe />}/>
-            <Route path="/ingredients" exact render={() => <SubheaderList items={ingredients} />} />
-            <Route path="/tags" exact render={() => <SubheaderList items={tags} />} />
+            <Route path="/ingredients" exact render={() => <ExtrasList items={ingredients} />} />
+            <Route path="/ingredient/:id" exact render={(props) => <ExtrasDetails item={ingredients.find(i => i.id === parseInt(props.match.params.id))} recipes={recipes.filter(r => r.ingredients.some(i => i.ingredient.id === parseInt(props.match.params.id)))} />} />
+            <Route path="/tags" exact render={() => <ExtrasList items={tags} />} />
+            <Route path="/tag/:id" exact render={(props) => <ExtrasDetails item={tags.find(t => t.id === parseInt(props.match.params.id))} recipes={recipes.filter(r => r.tags.some(t => t.id === parseInt(props.match.params.id)))} />} />
             <Redirect to='/' />
           </Switch>
         </Container>
