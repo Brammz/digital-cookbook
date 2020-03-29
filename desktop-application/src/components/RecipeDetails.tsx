@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Chip, Container, Grid, Typography } from '@material-ui/core';
 import { Recipe } from '../types';
 
@@ -18,7 +19,9 @@ const RecipeDetails: React.FC<RecipeDetailsProps> = ({ recipe }) => {
             {recipe?.name}
           </Typography>
           {recipe?.tags.map(tag => (
-            <Chip key={tag.id} color="primary" label={tag.name.replace(/./, c => c.toUpperCase())} style={{ margin: '2px' }} />
+            <Link to={`/tag/${tag.id}`} style={{ color: 'inherit', 'cursor': 'pointer', 'textDecoration': 'inherit' }}>
+              <Chip key={tag.id} color="primary" label={tag.name.replace(/./, c => c.toUpperCase())} style={{ margin: '2px' }} />
+            </Link>
           ))}
         </Grid>
         <Grid item xs={6} style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid #555' }}>
@@ -37,7 +40,11 @@ const RecipeDetails: React.FC<RecipeDetailsProps> = ({ recipe }) => {
           </Typography>
           {recipe?.ingredients.map(ingredient => (
             <div className="ingredient">
-              <span className="ingredient-name">{ingredient.ingredient.name.replace(/./, c => c.toUpperCase())}</span>
+              <span className="ingredient-name">
+                <Link to={`/ingredient/${ingredient.ingredient.id}`} style={{ color: 'inherit', 'cursor': 'pointer', 'textDecoration': 'inherit' }}>
+                  {ingredient.ingredient.name.replace(/./, c => c.toUpperCase())}
+                </Link>
+              </span>
               <span className="dots"></span>
               <span className="ingredient-unit">{ingredient.amount}{ingredient.unit !== '#' && ' ' + ingredient.unit}</span>
             </div>

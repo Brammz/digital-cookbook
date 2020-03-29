@@ -10,13 +10,13 @@ const Navbar: React.FC = () => {
           <Typography variant="h6" style={{ flexGrow: 1 }}>
             Digital Cookbook
           </Typography>
-          <Link to="/recipes" style={{ color: 'inherit', 'cursor': 'inherit', 'textDecoration': 'inherit' }}>
+          <Link to="/recipes" style={{ color: 'inherit', 'cursor': 'pointer', 'textDecoration': 'inherit' }}>
             <Button color="inherit">Recepten</Button>
           </Link>
-          <Link to="/ingredients" style={{ color: 'inherit', 'cursor': 'inherit', 'textDecoration': 'inherit' }}>
+          <Link to="/ingredients" style={{ color: 'inherit', 'cursor': 'pointer', 'textDecoration': 'inherit' }}>
             <Button color="inherit">Ingredienten</Button>
           </Link>
-          <Link to="/tags" style={{ color: 'inherit', 'cursor': 'inherit', 'textDecoration': 'inherit' }}>
+          <Link to="/tags" style={{ color: 'inherit', 'cursor': 'pointer', 'textDecoration': 'inherit' }}>
             <Button color="inherit">Tags</Button>
           </Link>
         </Toolbar>

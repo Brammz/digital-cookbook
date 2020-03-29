@@ -24,8 +24,8 @@ const ExtrasList: React.FC<ExtrasListProps> = ({ items }) => {
           <ul>
             <ListSubheader>{key}</ListSubheader>
               {reducedItems[key].sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1).map(item => (
-                <Link key={item.id} to={`/${items[0] instanceof Ingredient ? 'ingredient' : 'tag'}/${item.id}`} style={{ color: 'inherit', 'cursor': 'inherit', 'textDecoration': 'inherit' }}>
-                  <ListItem style={{ cursor: 'pointer', textAlign: 'center' }}>
+                <Link key={item.id} to={`/${items[0] instanceof Ingredient ? 'ingredient' : 'tag'}/${item.id}`} style={{ color: 'inherit', 'cursor': 'pointer', 'textDecoration': 'inherit' }}>
+                  <ListItem style={{ textAlign: 'center' }}>
                     <ListItemText primary={item.name.toLowerCase().replace(/./, c => c.toUpperCase())} />
                   </ListItem>
                 </Link>
