@@ -24,6 +24,10 @@ const App: React.FC = () => {
     return a;
   }
 
+  function shuffleProps() {
+    setRecipes(shuffle(recipes));
+  }
+
   useEffect(() => {
     fetchData(shuffle);
   }, []);
@@ -98,9 +102,9 @@ const App: React.FC = () => {
         <Navbar />
         <Container>
           <Switch>
-            <Route path={['/', '/recipes']} exact render={() => <Recipes recipes={recipes} />} />
+            <Route path={['/', '/recipes']} exact render={() => <Recipes recipes={recipes} shuffle={shuffleProps} />} />
+            <Route path="/recipe/new" exact render={() => <AddRecipe ingredients={ingredients} tags={tags} />}/>
             <Route path="/recipe/:id" exact render={(props) => <RecipeDetails recipe={recipes.find(r => r.id === parseInt(props.match.params.id))} />} />
-            <Route path="/recipe/new" exact render={() => <AddRecipe />}/>
             <Route path="/ingredients" exact render={() => <ExtrasList items={ingredients} />} />
             <Route path="/ingredient/:id" exact render={(props) => <ExtrasDetails item={ingredients.find(i => i.id === parseInt(props.match.params.id))} recipes={recipes.filter(r => r.ingredients.some(i => i.ingredient.id === parseInt(props.match.params.id)))} />} />
             <Route path="/tags" exact render={() => <ExtrasList items={tags} />} />

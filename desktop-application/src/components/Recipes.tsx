@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { TextField } from '@material-ui/core';
+import { Link } from 'react-router-dom';
+import { Button, TextField } from '@material-ui/core';
 import { RecipeList } from '.';
 import { Recipe } from '../types';
 
 interface RecipesProps {
   recipes: Recipe[];
+  shuffle: () => void;
 }
 
-const Recipes: React.FC<RecipesProps> = ({ recipes }) => {
+const Recipes: React.FC<RecipesProps> = ({ recipes, shuffle }) => {
   const [filter, setFilter] = useState('');
 
   const search = (e: any) => {
@@ -22,7 +24,13 @@ const Recipes: React.FC<RecipesProps> = ({ recipes }) => {
 
   return (
     <>
-      <TextField label="Search" placeholder="Enter a name, ingredient or tag..." InputLabelProps={{ shrink: true }} variant="outlined" fullWidth style={{ margin: '25px 0' }} onChange={search} />
+      <div className="input-group">
+        <TextField label="Search" placeholder="Enter a name, ingredient or tag..." InputLabelProps={{ shrink: true }} variant="outlined" fullWidth onChange={search} />
+        <Link to="/recipe/new" style={{ color: 'inherit', 'cursor': 'pointer', 'textDecoration': 'inherit' }}>
+          <Button variant="contained" color="primary" disableElevation style={{ height: '100%', width: '100%' }}>+</Button>
+        </Link>
+        <Button variant="contained" color="primary" disableElevation onClick={shuffle}>O</Button>
+      </div>
       <RecipeList recipes={filteredRecipes} />
     </>
   );

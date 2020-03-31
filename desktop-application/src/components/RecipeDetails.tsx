@@ -19,8 +19,8 @@ const RecipeDetails: React.FC<RecipeDetailsProps> = ({ recipe }) => {
             {recipe?.name}
           </Typography>
           {recipe?.tags.map(tag => (
-            <Link to={`/tag/${tag.id}`} style={{ color: 'inherit', 'cursor': 'pointer', 'textDecoration': 'inherit' }}>
-              <Chip key={tag.id} color="primary" label={tag.name.replace(/./, c => c.toUpperCase())} style={{ margin: '2px' }} />
+            <Link key={tag.id} to={`/tag/${tag.id}`} style={{ color: 'inherit', 'cursor': 'pointer', 'textDecoration': 'inherit' }}>
+              <Chip color="primary" label={tag.name.replace(/./, c => c.toUpperCase())} style={{ margin: '2px' }} />
             </Link>
           ))}
         </Grid>
