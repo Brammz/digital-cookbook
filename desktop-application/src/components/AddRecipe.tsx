@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Button, Chip, Container, FormControl, Input, InputLabel, MenuItem, Select, TextField, Typography } from '@material-ui/core';
 import { Ingredient, Tag } from '../types';
-
-interface AddRecipeProps {
-  ingredients: Ingredient[];
-  tags: Tag[];
-}
 
 type SelectedIngredient = {
   ingredient: string;
@@ -13,12 +9,20 @@ type SelectedIngredient = {
   unit: string;
 }
 
-const AddRecipe: React.FC<AddRecipeProps> = ({ ingredients, tags }) => {
+interface AddRecipeProps {
+  addRecipe: (name: string, ingredients: SelectedIngredient[], tags: string[], image: string, preparation: string) => void;
+  ingredients: Ingredient[];
+  tags: Tag[];
+}
+
+const AddRecipe: React.FC<AddRecipeProps> = ({ addRecipe, ingredients, tags }) => {
   const [name, setName] = useState('');
   const [image, setImage] = useState('');
   const [selectedIngredients, setSelectedIngredients] = useState([{ ingredient: '', amount: 0, unit: ''}]);
   const [selectedTags, setSelectedTags] = useState(new Array<string>());
   const [preparation, setPreparation] = useState('');
+
+  let history = useHistory();
 
   const handleTextChange = (event: React.ChangeEvent<{ value: string, name: string }>) => {
     switch(event.target.name) {
@@ -62,18 +66,15 @@ const AddRecipe: React.FC<AddRecipeProps> = ({ ingredients, tags }) => {
     setSelectedTags(event.target.value as string[]);
   };
 
-  const addRecipe = (event: React.SyntheticEvent) => {
+  const submitRecipe = async (event: React.SyntheticEvent) => {
     event.preventDefault();
-    console.log('name :', name);
-    console.log('image :', image);
-    console.log('selectedIngredients :', selectedIngredients);
-    console.log('selectedTags :', selectedTags.join(', '));
-    console.log('preparation :', preparation);
+    await addRecipe(name, [], [], image, preparation);
+    history.push('/');
   };
 
   return (
     <Container maxWidth="md">
-      <form onSubmit={addRecipe}>
+      <form onSubmit={submitRecipe}>
         <Typography gutterBottom variant="h3" component="h2" style={{ paddingTop: '25px', paddingBottom: '25px' }}>Add Recipe</Typography>
         <div style={{ display: 'flex', margin: '20px 0' }}>
           <TextField name="name" label="Name" placeholder="Enter a name" onChange={handleTextChange} InputLabelProps={{ shrink: true }} variant="outlined" fullWidth style={{ flex: 1, marginRight: '5px' }} />
@@ -135,7 +136,7 @@ const AddRecipe: React.FC<AddRecipeProps> = ({ ingredients, tags }) => {
           </Select>
         </div>
         <div style={{ margin: '20px 0' }}>
-          <TextField name="preparation" label="Preparation"  onChange={handleTextChange} multiline rows="10" variant="outlined" fullWidth />
+          <TextField name="preparation" label="Preparation" placeholder="Enter the preparation (use '>' to add a new item to the numbered list)" onChange={handleTextChange} multiline rows="10" variant="outlined" fullWidth />
         </div>
         <Button type="submit" variant="contained" color="primary" style={{ float: 'right' }}>Add</Button>
       </form>

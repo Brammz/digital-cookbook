@@ -10,12 +10,18 @@ import './App.css';
 const client = new google.auth.JWT(credentials.client_email, '', credentials.private_key, ['https://www.googleapis.com/auth/spreadsheets']);
 const sheets = google.sheets('v4');
 
+type SelectedIngredient = {
+  ingredient: string;
+  amount: number;
+  unit: string;
+}
+
 const App: React.FC = () => {
   const [recipes, setRecipes] = useState(Array<Recipe>());
   const [ingredients, setIngredients] = useState(Array<Ingredient>());
   const [tags, setTags] = useState(Array<Tag>());
 
-  function shuffle(recipes: Recipe[]) {
+  const shuffle = (recipes: Recipe[]) => {
     let a = [...recipes];
     for (let i = a.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -24,15 +30,11 @@ const App: React.FC = () => {
     return a;
   }
 
-  function shuffleProps() {
+  const shuffleProps = () => {
     setRecipes(shuffle(recipes));
   }
 
-  useEffect(() => {
-    fetchData(shuffle);
-  }, []);
-
-  async function fetchData(shuffle: (a: Recipe[]) => Recipe[]) {
+  const fetchData = async (shuffle: (a: Recipe[]) => Recipe[]) => {
     // fetch ingredients
     const ingredientsResponse = await sheets.spreadsheets.values.get({
       auth: client,
@@ -96,6 +98,35 @@ const App: React.FC = () => {
     setRecipes(shuffle(processedRecipes));
   }
 
+  const addRecipe = async (name: string, ingredients: SelectedIngredient[], tags: string[], image: string, preparation: string) => {
+    const newRecipe = new Recipe(recipes.length+1, name, [], [], image, preparation);
+    await sheets.spreadsheets.values.append({
+      auth: client,
+      spreadsheetId: credentials.sheet_id,
+      range: 'Recipes',
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
+        values: [[
+          newRecipe.id,
+          newRecipe.name,
+          '[]',
+          '[]',
+          newRecipe.image,
+          newRecipe.preparation
+        ]]
+      }
+    }).then(async res => {
+      console.log('done :', res);
+      await fetchData(shuffle);
+    }).catch(err => {
+      console.log('err :', err);
+    });
+  }
+
+  useEffect(() => {
+    fetchData(shuffle);
+  }, []);
+
   return (
     <Router>
       <div className="App">
@@ -103,7 +134,7 @@ const App: React.FC = () => {
         <Container>
           <Switch>
             <Route path={['/', '/recipes']} exact render={() => <Recipes recipes={recipes} shuffle={shuffleProps} />} />
-            <Route path="/recipe/new" exact render={() => <AddRecipe ingredients={ingredients} tags={tags} />}/>
+            <Route path="/recipe/new" exact render={() => <AddRecipe addRecipe={addRecipe} ingredients={ingredients} tags={tags} />}/>
             <Route path="/recipe/:id" exact render={(props) => <RecipeDetails recipe={recipes.find(r => r.id === parseInt(props.match.params.id))} />} />
             <Route path="/ingredients" exact render={() => <ExtrasList items={ingredients} />} />
             <Route path="/ingredient/:id" exact render={(props) => <ExtrasDetails item={ingredients.find(i => i.id === parseInt(props.match.params.id))} recipes={recipes.filter(r => r.ingredients.some(i => i.ingredient.id === parseInt(props.match.params.id)))} />} />
