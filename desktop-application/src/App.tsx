@@ -98,21 +98,28 @@ const App: React.FC = () => {
     setRecipes(shuffle(processedRecipes));
   }
 
-  const addRecipe = async (name: string, ingredients: SelectedIngredient[], tags: string[], image: string, preparation: string) => {
-    const newRecipe = new Recipe(recipes.length+1, name, [], [], image, preparation);
+  const addRecipe = async (name: string, selectedIngredients: SelectedIngredient[], selectedTags: string[], image: string, preparation: string) => {
+    let newIngredients = selectedIngredients.map(selected => {
+      return {
+        id: (ingredients.find(i => i.name.toLowerCase() === selected.ingredient.toLowerCase()) || {}).id,
+        amount: selected.amount,
+        unit: selected.unit
+      };
+    });
+    let newTags = selectedTags.map(selected => (tags.find(t => t.name.toLowerCase() === selected.toLowerCase()) || {}).id)
     await sheets.spreadsheets.values.append({
       auth: client,
       spreadsheetId: credentials.sheet_id,
-      range: 'Recipes',
+      range: 'Recipes', 
       valueInputOption: 'USER_ENTERED',
       requestBody: {
         values: [[
-          newRecipe.id,
-          newRecipe.name,
-          '[]',
-          '[]',
-          newRecipe.image,
-          newRecipe.preparation
+          recipes.length+1,
+          name,
+          JSON.stringify(newIngredients),
+          JSON.stringify(newTags),
+          image,
+          preparation
         ]]
       }
     }).then(async res => {

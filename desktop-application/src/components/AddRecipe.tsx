@@ -17,10 +17,13 @@ interface AddRecipeProps {
 
 const AddRecipe: React.FC<AddRecipeProps> = ({ addRecipe, ingredients, tags }) => {
   const [name, setName] = useState('');
+  const [nameValidation, setNameValidation] = useState({ error: false, helperText: '' });
   const [image, setImage] = useState('');
+  const [imageValidation, setImageValidation] = useState({ error: false, helperText: '' });
   const [selectedIngredients, setSelectedIngredients] = useState([{ ingredient: '', amount: 0, unit: ''}]);
   const [selectedTags, setSelectedTags] = useState(new Array<string>());
   const [preparation, setPreparation] = useState('');
+  const [submitDisabled, setSubmitDisabled] = useState(false);
 
   let history = useHistory();
 
@@ -68,7 +71,20 @@ const AddRecipe: React.FC<AddRecipeProps> = ({ addRecipe, ingredients, tags }) =
 
   const submitRecipe = async (event: React.SyntheticEvent) => {
     event.preventDefault();
-    await addRecipe(name, [], [], image, preparation);
+    setSubmitDisabled(true);
+    if (name.length < 5) {
+      setNameValidation({ error: true, helperText: 'Name too short.' });
+      setSubmitDisabled(false);
+      return;
+    }
+    if (!/^https?:\/\/(www\.)?[A-Za-z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/.test(image)) {
+      setImageValidation({ error: true, helperText: 'Not a valid url.' });
+      setSubmitDisabled(false);
+      return;
+    }
+    setNameValidation({ error: false, helperText: '' });
+    setImageValidation({ error: false, helperText: '' })
+    await addRecipe(name, selectedIngredients, selectedTags, image, preparation);
     history.push('/');
   };
 
@@ -77,8 +93,8 @@ const AddRecipe: React.FC<AddRecipeProps> = ({ addRecipe, ingredients, tags }) =
       <form onSubmit={submitRecipe}>
         <Typography gutterBottom variant="h3" component="h2" style={{ paddingTop: '25px', paddingBottom: '25px' }}>Add Recipe</Typography>
         <div style={{ display: 'flex', margin: '20px 0' }}>
-          <TextField name="name" label="Name" placeholder="Enter a name" onChange={handleTextChange} InputLabelProps={{ shrink: true }} variant="outlined" fullWidth style={{ flex: 1, marginRight: '5px' }} />
-          <TextField name="image" label="Image"  placeholder="Enter a url" onChange={handleTextChange} InputLabelProps={{ shrink: true }} variant="outlined" fullWidth style={{ flex: 1, marginLeft: '5px' }} />
+          <TextField name="name" label="Name" placeholder="Enter a name" error={nameValidation.error} helperText={nameValidation.helperText} onChange={handleTextChange} InputLabelProps={{ shrink: true }} variant="outlined" fullWidth style={{ flex: 1, marginRight: '5px' }} />
+          <TextField name="image" label="Image"  placeholder="Enter a url" error={imageValidation.error} helperText={imageValidation.helperText} onChange={handleTextChange} InputLabelProps={{ shrink: true }} variant="outlined" fullWidth style={{ flex: 1, marginLeft: '5px' }} />
         </div>
         {selectedIngredients.map((selected, index) => (
           <div key={index} style={{ display: 'flex', margin: '20px 0' }}>
@@ -93,7 +109,7 @@ const AddRecipe: React.FC<AddRecipeProps> = ({ addRecipe, ingredients, tags }) =
                     ))}
                   </Select>
                 </FormControl>
-                <TextField name="amount" label="Amount" value={selected.amount || undefined} onChange={(e) => handleIngredientChange(e, index)} variant="outlined" fullWidth style={{ flex: 1, marginLeft: '5px', marginRight: '5px' }} />
+                <TextField type="number" name="amount" label="Amount" value={selected.amount || undefined} onChange={(e) => handleIngredientChange(e, index)} variant="outlined" fullWidth style={{ flex: 1, marginLeft: '5px', marginRight: '5px' }} />
                 <FormControl variant="outlined" fullWidth style={{ flex: 1, marginLeft: '5px' }}>
                   <InputLabel>Unit</InputLabel>
                   <Select name="unit" label="Unit" value={selected.unit} onChange={(e) => handleIngredientChange(e, index)} native fullWidth>
@@ -138,7 +154,7 @@ const AddRecipe: React.FC<AddRecipeProps> = ({ addRecipe, ingredients, tags }) =
         <div style={{ margin: '20px 0' }}>
           <TextField name="preparation" label="Preparation" placeholder="Enter the preparation (use '>' to add a new item to the numbered list)" onChange={handleTextChange} multiline rows="10" variant="outlined" fullWidth />
         </div>
-        <Button type="submit" variant="contained" color="primary" style={{ float: 'right' }}>Add</Button>
+        <Button type="submit" disabled={submitDisabled} variant="contained" color="primary" style={{ float: 'right' }}>Add</Button>
       </form>
     </Container>
   );

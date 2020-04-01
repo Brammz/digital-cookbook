@@ -27,9 +27,9 @@ const Recipes: React.FC<RecipesProps> = ({ recipes, shuffle }) => {
       <div className="input-group">
         <TextField label="Search" placeholder="Enter a name, ingredient or tag..." InputLabelProps={{ shrink: true }} variant="outlined" fullWidth onChange={search} />
         <Link to="/recipe/new" style={{ color: 'inherit', 'cursor': 'pointer', 'textDecoration': 'inherit' }}>
-          <Button variant="contained" color="primary" disableElevation style={{ height: '100%', width: '100%' }}>+</Button>
+          <Button variant="contained" color="primary" disableElevation style={{ height: '100%', width: '100%' }}>Add</Button>
         </Link>
-        <Button variant="contained" color="primary" disableElevation onClick={shuffle}>O</Button>
+        <Button variant="contained" color="primary" disableElevation onClick={shuffle}>Shuffle</Button>
       </div>
       <RecipeList recipes={filteredRecipes} />
     </>
