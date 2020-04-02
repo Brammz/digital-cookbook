@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Button, Chip, Container, FormControl, Input, InputLabel, MenuItem, Select, TextField, Typography } from '@material-ui/core';
-import { Ingredient, Tag } from '../types';
+import { Ingredient, Recipe, Tag } from '../types';
 
 type SelectedIngredient = {
   ingredient: string;
@@ -9,20 +9,22 @@ type SelectedIngredient = {
   unit: string;
 }
 
-interface AddRecipeProps {
-  addRecipe: (name: string, ingredients: SelectedIngredient[], tags: string[], image: string, preparation: string) => void;
+interface RecipeFormProps {
+  addRecipe?: (name: string, ingredients: SelectedIngredient[], tags: string[], image: string, preparation: string) => void;
+  editRecipe?: (id: number, name: string, ingredients: SelectedIngredient[], tags: string[], image: string, preparation: string) => void;
+  recipe?: Recipe;
   ingredients: Ingredient[];
   tags: Tag[];
 }
 
-const AddRecipe: React.FC<AddRecipeProps> = ({ addRecipe, ingredients, tags }) => {
-  const [name, setName] = useState('');
+const RecipeForm: React.FC<RecipeFormProps> = ({ addRecipe, editRecipe, recipe, ingredients, tags }) => {
+  const [name, setName] = useState(recipe ? recipe.name : '');
   const [nameValidation, setNameValidation] = useState({ error: false, helperText: '' });
-  const [image, setImage] = useState('');
+  const [image, setImage] = useState(recipe ? recipe.image : '');
   const [imageValidation, setImageValidation] = useState({ error: false, helperText: '' });
-  const [selectedIngredients, setSelectedIngredients] = useState([{ ingredient: '', amount: 0, unit: ''}]);
-  const [selectedTags, setSelectedTags] = useState(new Array<string>());
-  const [preparation, setPreparation] = useState('');
+  const [selectedIngredients, setSelectedIngredients] = useState(recipe ? recipe.ingredients.map(iir => { return { ingredient: iir.ingredient.name, amount: iir.amount, unit: iir.unit }}) : [{ ingredient: '', amount: 0, unit: ''}]);
+  const [selectedTags, setSelectedTags] = useState(recipe ? recipe.tags.map(tag => tag.name) : new Array<string>());
+  const [preparation, setPreparation] = useState(recipe ? recipe.preparation : '');
   const [submitDisabled, setSubmitDisabled] = useState(false);
 
   let history = useHistory();
@@ -51,7 +53,6 @@ const AddRecipe: React.FC<AddRecipeProps> = ({ addRecipe, ingredients, tags }) =
 
   const handleIngredientChange = (event: React.ChangeEvent<{ name?: string; value: unknown }>, index: number) => {
     if (typeof event.target.value !== 'string') return;
-    console.log(event.target.value, event.target.name, index);
     switch(event.target.name) {
       case 'ingredient':
         setSelectedIngredients([...selectedIngredients.slice(0, index), { ...selectedIngredients[index], ingredient: event.target.value }, ...selectedIngredients.slice(index+1)]);
@@ -84,17 +85,22 @@ const AddRecipe: React.FC<AddRecipeProps> = ({ addRecipe, ingredients, tags }) =
     }
     setNameValidation({ error: false, helperText: '' });
     setImageValidation({ error: false, helperText: '' })
-    await addRecipe(name, selectedIngredients, selectedTags, image, preparation);
-    history.push('/');
+    if (recipe && editRecipe) {
+      await editRecipe(recipe.id, name, selectedIngredients, selectedTags, image, preparation);
+      history.push(`/recipe/${recipe.id}`);
+    } else if (addRecipe) {
+      await addRecipe(name, selectedIngredients, selectedTags, image, preparation);
+      history.push('/');
+    }
   };
 
   return (
     <Container maxWidth="md">
       <form onSubmit={submitRecipe}>
-        <Typography gutterBottom variant="h3" component="h2" style={{ paddingTop: '25px', paddingBottom: '25px' }}>Add Recipe</Typography>
+        <Typography gutterBottom variant="h3" component="h2" style={{ paddingTop: '25px', paddingBottom: '25px' }}>{recipe ? 'Edit' : 'Add'} Recipe</Typography>
         <div style={{ display: 'flex', margin: '20px 0' }}>
-          <TextField name="name" label="Name" placeholder="Enter a name" error={nameValidation.error} helperText={nameValidation.helperText} onChange={handleTextChange} InputLabelProps={{ shrink: true }} variant="outlined" fullWidth style={{ flex: 1, marginRight: '5px' }} />
-          <TextField name="image" label="Image"  placeholder="Enter a url" error={imageValidation.error} helperText={imageValidation.helperText} onChange={handleTextChange} InputLabelProps={{ shrink: true }} variant="outlined" fullWidth style={{ flex: 1, marginLeft: '5px' }} />
+          <TextField name="name" label="Name" placeholder="Enter a name" value={name} onChange={handleTextChange} error={nameValidation.error} helperText={nameValidation.helperText} variant="outlined" fullWidth style={{ flex: 1, marginRight: '5px' }} />
+          <TextField name="image" label="Image"  placeholder="Enter a url" value={image} onChange={handleTextChange} error={imageValidation.error} helperText={imageValidation.helperText} variant="outlined" fullWidth style={{ flex: 1, marginLeft: '5px' }} />
         </div>
         {selectedIngredients.map((selected, index) => (
           <div key={index} style={{ display: 'flex', margin: '20px 0' }}>
@@ -152,12 +158,17 @@ const AddRecipe: React.FC<AddRecipeProps> = ({ addRecipe, ingredients, tags }) =
           </Select>
         </div>
         <div style={{ margin: '20px 0' }}>
-          <TextField name="preparation" label="Preparation" placeholder="Enter the preparation (use '>' to add a new item to the numbered list)" onChange={handleTextChange} multiline rows="10" variant="outlined" fullWidth />
+          <TextField name="preparation" label="Preparation" placeholder="Enter the preparation (use '>' to add a new item to the numbered list)" value={preparation} onChange={handleTextChange} multiline rows="10" variant="outlined" fullWidth />
         </div>
-        <Button type="submit" disabled={submitDisabled} variant="contained" color="primary" style={{ float: 'right' }}>Add</Button>
+        {recipe && (
+          <Link to={`/recipe/${recipe?.id}`} style={{ color: 'inherit', 'cursor': 'pointer', 'textDecoration': 'inherit' }}>
+            <Button type="submit" variant="contained" style={{ float: 'left' }}>Back</Button>
+          </Link>
+        )}
+        <Button type="submit" disabled={submitDisabled} variant="contained" color="primary" style={{ float: 'right' }}>{recipe ? 'Save' : 'Add'}</Button>
       </form>
     </Container>
   );
 };
 
-export default AddRecipe;
+export default RecipeForm;

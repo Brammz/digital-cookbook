@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 import { google } from 'googleapis';
 import { Container } from '@material-ui/core';
 import credentials from './credentials.json';
-import { AddRecipe, ExtrasDetails, ExtrasList, Navbar, Recipes, RecipeDetails } from './components';
+import { ExtrasDetails, ExtrasList, Navbar, Recipes, RecipeDetails, RecipeForm } from './components';
 import { Recipe, IngredientInRecipe, Ingredient, Tag } from './types';
 import './App.css';
 
@@ -28,11 +28,11 @@ const App: React.FC = () => {
         [a[i], a[j]] = [a[j], a[i]];
     }
     return a;
-  }
+  };
 
   const shuffleProps = () => {
     setRecipes(shuffle(recipes));
-  }
+  };
 
   const fetchData = async (shuffle: (a: Recipe[]) => Recipe[]) => {
     // fetch ingredients
@@ -96,7 +96,7 @@ const App: React.FC = () => {
     });
 
     setRecipes(shuffle(processedRecipes));
-  }
+  };
 
   const addRecipe = async (name: string, selectedIngredients: SelectedIngredient[], selectedTags: string[], image: string, preparation: string) => {
     let newIngredients = selectedIngredients.map(selected => {
@@ -128,7 +128,38 @@ const App: React.FC = () => {
     }).catch(err => {
       console.log('err :', err);
     });
-  }
+  };
+
+  const editRecipe = async (id: number, name: string, selectedIngredients: SelectedIngredient[], selectedTags: string[], image: string, preparation: string) => {
+    let newIngredients = selectedIngredients.map(selected => {
+      return {
+        id: (ingredients.find(i => i.name.toLowerCase() === selected.ingredient.toLowerCase()) || {}).id,
+        amount: selected.amount,
+        unit: selected.unit
+      };
+    });
+    let newTags = selectedTags.map(selected => (tags.find(t => t.name.toLowerCase() === selected.toLowerCase()) || {}).id)
+    await sheets.spreadsheets.values.update({
+      auth: client,
+      spreadsheetId: credentials.sheet_id,
+      range: `Recipes!A${id+1}:F${id+1}`, 
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
+        values: [[
+          id,
+          name,
+          JSON.stringify(newIngredients),
+          JSON.stringify(newTags),
+          image,
+          preparation
+        ]]
+      }
+    }).then(async res => {
+      console.log('done :', res);
+    }).catch(err => {
+      console.log('err :', err);
+    });
+  };
 
   useEffect(() => {
     fetchData(shuffle);
@@ -141,8 +172,9 @@ const App: React.FC = () => {
         <Container>
           <Switch>
             <Route path={['/', '/recipes']} exact render={() => <Recipes recipes={recipes} shuffle={shuffleProps} />} />
-            <Route path="/recipe/new" exact render={() => <AddRecipe addRecipe={addRecipe} ingredients={ingredients} tags={tags} />}/>
+            <Route path="/recipe/new" exact render={() => <RecipeForm addRecipe={addRecipe} ingredients={ingredients} tags={tags} />}/>
             <Route path="/recipe/:id" exact render={(props) => <RecipeDetails recipe={recipes.find(r => r.id === parseInt(props.match.params.id))} />} />
+            <Route path="/recipe/edit/:id" exact render={(props) => <RecipeForm editRecipe={editRecipe} recipe={recipes.find(r => r.id === parseInt(props.match.params.id))} ingredients={ingredients} tags={tags} />} />
             <Route path="/ingredients" exact render={() => <ExtrasList items={ingredients} />} />
             <Route path="/ingredient/:id" exact render={(props) => <ExtrasDetails item={ingredients.find(i => i.id === parseInt(props.match.params.id))} recipes={recipes.filter(r => r.ingredients.some(i => i.ingredient.id === parseInt(props.match.params.id)))} />} />
             <Route path="/tags" exact render={() => <ExtrasList items={tags} />} />
