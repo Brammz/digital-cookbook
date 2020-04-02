@@ -11,9 +11,9 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
   return (
     <Link to={`/recipe/${recipe.id}`} style={{ color: 'inherit', 'cursor': 'pointer', 'textDecoration': 'inherit' }}>
       <Card style={{ height: '100%' }}>
-        <CardActionArea>
+        <CardActionArea style={{ height: '100%' }}>
           <CardMedia style={{ height: '20vh', objectFit: 'cover' }} image={recipe.image} title={recipe.name} />
-          <CardContent>
+          <CardContent style={{ height: '100%' }}>
             <Typography gutterBottom variant="h6" component="h6">
               {recipe.name}
             </Typography>

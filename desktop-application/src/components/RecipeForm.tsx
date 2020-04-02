@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Button, Chip, Container, FormControl, Input, InputLabel, MenuItem, Select, TextField, Typography } from '@material-ui/core';
 import { Ingredient, Recipe, Tag } from '../types';
 
@@ -160,11 +160,6 @@ const RecipeForm: React.FC<RecipeFormProps> = ({ addRecipe, editRecipe, recipe, 
         <div style={{ margin: '20px 0' }}>
           <TextField name="preparation" label="Preparation" placeholder="Enter the preparation (use '>' to add a new item to the numbered list)" value={preparation} onChange={handleTextChange} multiline rows="10" variant="outlined" fullWidth />
         </div>
-        {recipe && (
-          <Link to={`/recipe/${recipe?.id}`} style={{ color: 'inherit', 'cursor': 'pointer', 'textDecoration': 'inherit' }}>
-            <Button type="submit" variant="contained" style={{ float: 'left' }}>Back</Button>
-          </Link>
-        )}
         <div style={{ marginTop: '20px' }}>
           <Button onClick={() => history.goBack()} variant="contained" style={{ float: 'left' }}>Back</Button>
           <Button type="submit" disabled={submitDisabled} variant="contained" color="primary" style={{ float: 'right' }}>{recipe ? 'Save' : 'Add'}</Button>
