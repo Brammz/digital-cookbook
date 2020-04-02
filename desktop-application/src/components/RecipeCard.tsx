@@ -10,11 +10,11 @@ interface RecipeCardProps {
 const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
   return (
     <Link to={`/recipe/${recipe.id}`} style={{ color: 'inherit', 'cursor': 'pointer', 'textDecoration': 'inherit' }}>
-      <Card>
+      <Card style={{ height: '100%' }}>
         <CardActionArea>
           <CardMedia style={{ height: '20vh', objectFit: 'cover' }} image={recipe.image} title={recipe.name} />
           <CardContent>
-            <Typography gutterBottom variant="h5" component="h2">
+            <Typography gutterBottom variant="h6" component="h6">
               {recipe.name}
             </Typography>
           </CardContent>
