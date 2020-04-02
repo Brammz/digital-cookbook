@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Button, Chip, Container, Grid, Typography } from '@material-ui/core';
 import { Recipe } from '../types';
 
@@ -8,6 +8,8 @@ interface RecipeDetailsProps {
 }
 
 const RecipeDetails: React.FC<RecipeDetailsProps> = ({ recipe }) => {
+  let history = useHistory();
+
   return (
     <Container maxWidth="md" style={{ paddingTop: '25px' }}>
       <Grid container>
@@ -51,9 +53,12 @@ const RecipeDetails: React.FC<RecipeDetailsProps> = ({ recipe }) => {
           ))}
         </Grid>
       </Grid>
-      <Link to={`/recipe/edit/${recipe?.id}`} style={{ color: 'inherit', 'cursor': 'pointer', 'textDecoration': 'inherit' }}>
-        <Button type="submit" variant="contained" color="primary" style={{ float: 'right' }}>Edit</Button>
-      </Link>
+      <div style={{ marginTop: '15px' }}>
+        <Button type="submit" onClick={() => history.goBack()} variant="contained" style={{ float: 'left' }}>Back</Button>
+        <Link to={`/recipe/edit/${recipe?.id}`} style={{ color: 'inherit', 'cursor': 'pointer', 'textDecoration': 'inherit' }}>
+          <Button type="submit" variant="contained" color="primary" style={{ float: 'right' }}>Edit</Button>
+        </Link>
+      </div>
     </Container>
   );
 };

@@ -48,11 +48,11 @@ const Recipes: React.FC<RecipesProps> = ({ recipes, shuffle }) => {
           />
         </FormControl>
         <Link to="/recipe/new" style={{ color: 'inherit', 'cursor': 'pointer', 'textDecoration': 'inherit' }}>
-          <Button variant="contained" color="primary" disableElevation style={{ height: '100%', width: '100%' }}>
+          <Button variant="contained" color="primary" style={{ height: '100%', width: '100%' }}>
             <Icon><Add /></Icon>
           </Button>
         </Link>
-        <Button variant="contained" color="primary" disableElevation onClick={shuffle}>
+        <Button variant="contained" color="primary" onClick={shuffle}>
           <Icon><Shuffle /></Icon>
         </Button>
       </div>
