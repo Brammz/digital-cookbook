@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, TextField } from '@material-ui/core';
+import { Button, FormControl, IconButton, InputLabel, InputAdornment, OutlinedInput, Icon } from '@material-ui/core';
+import { Add, Shuffle, Cancel } from '@material-ui/icons';
 import { RecipeList } from '.';
 import { Recipe } from '../types';
 
@@ -12,9 +13,13 @@ interface RecipesProps {
 const Recipes: React.FC<RecipesProps> = ({ recipes, shuffle }) => {
   const [filter, setFilter] = useState('');
 
+  const clearSearch = () => {
+    setFilter('');
+  };
+
   const search = (e: any) => {
     setFilter(e.target.value.toLowerCase());
-  }
+  };
 
   const filteredRecipes = recipes.filter(recipe => (
     recipe.name.toLowerCase().includes(filter) ||
@@ -25,11 +30,31 @@ const Recipes: React.FC<RecipesProps> = ({ recipes, shuffle }) => {
   return (
     <>
       <div className="input-group">
-        <TextField label="Search" placeholder="Enter a name, ingredient or tag..." InputLabelProps={{ shrink: true }} variant="outlined" fullWidth onChange={search} />
+        <FormControl variant="outlined" fullWidth>
+          <InputLabel>Search</InputLabel>
+          <OutlinedInput
+            type="text"
+            placeholder="Enter a name, ingredient or tag..."
+            value={filter}
+            onChange={search}
+            endAdornment={!filter ? '' :
+              <InputAdornment position="end">
+                <IconButton onClick={clearSearch} edge="end">
+                  <Cancel />
+                </IconButton>
+              </InputAdornment>
+            }
+            labelWidth={70}
+          />
+        </FormControl>
         <Link to="/recipe/new" style={{ color: 'inherit', 'cursor': 'pointer', 'textDecoration': 'inherit' }}>
-          <Button variant="contained" color="primary" disableElevation style={{ height: '100%', width: '100%' }}>Add</Button>
+          <Button variant="contained" color="primary" disableElevation style={{ height: '100%', width: '100%' }}>
+            <Icon><Add /></Icon>
+          </Button>
         </Link>
-        <Button variant="contained" color="primary" disableElevation onClick={shuffle}>Shuffle</Button>
+        <Button variant="contained" color="primary" disableElevation onClick={shuffle}>
+          <Icon><Shuffle /></Icon>
+        </Button>
       </div>
       <RecipeList recipes={filteredRecipes} />
     </>
