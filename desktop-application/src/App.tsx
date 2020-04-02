@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 import { google } from 'googleapis';
 import { Container } from '@material-ui/core';
 import credentials from './credentials.json';
-import { ExtrasDetails, ExtrasList, Navbar, Recipes, RecipeDetails, RecipeForm } from './components';
+import { ExtrasDetails, ExtrasList, IngredientForm, Navbar, Recipes, RecipeDetails, RecipeForm, TagForm } from './components';
 import { Recipe, IngredientInRecipe, Ingredient, Tag } from './types';
 import './App.css';
 
@@ -110,7 +110,7 @@ const App: React.FC = () => {
     await sheets.spreadsheets.values.append({
       auth: client,
       spreadsheetId: credentials.sheet_id,
-      range: 'Recipes', 
+      range: 'Recipes',
       valueInputOption: 'USER_ENTERED',
       requestBody: {
         values: [[
@@ -156,6 +156,47 @@ const App: React.FC = () => {
       }
     }).then(async res => {
       console.log('done :', res);
+      await fetchData(shuffle);
+    }).catch(err => {
+      console.log('err :', err);
+    });
+  };
+
+  const addIngredient = async (name: string) => {
+    await sheets.spreadsheets.values.append({
+      auth: client,
+      spreadsheetId: credentials.sheet_id,
+      range: 'Ingredients',
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
+        values: [[
+          ingredients.length+1,
+          name
+        ]]
+      }
+    }).then(async res => {
+      console.log('done :', res);
+      await fetchData(shuffle);
+    }).catch(err => {
+      console.log('err :', err);
+    });
+  };
+
+  const addTag = async (name: string) => {
+    await sheets.spreadsheets.values.append({
+      auth: client,
+      spreadsheetId: credentials.sheet_id,
+      range: 'Tags',
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
+        values: [[
+          tags.length+1,
+          name
+        ]]
+      }
+    }).then(async res => {
+      console.log('done :', res);
+      await fetchData(shuffle);
     }).catch(err => {
       console.log('err :', err);
     });
@@ -176,8 +217,10 @@ const App: React.FC = () => {
             <Route path="/recipe/:id" exact render={(props) => <RecipeDetails recipe={recipes.find(r => r.id === parseInt(props.match.params.id))} />} />
             <Route path="/recipe/edit/:id" exact render={(props) => <RecipeForm editRecipe={editRecipe} recipe={recipes.find(r => r.id === parseInt(props.match.params.id))} ingredients={ingredients} tags={tags} />} />
             <Route path="/ingredients" exact render={() => <ExtrasList items={ingredients} />} />
+            <Route path="/ingredient/new" exact render={() => <IngredientForm addIngredient={addIngredient} ingredients={ingredients} />} />
             <Route path="/ingredient/:id" exact render={(props) => <ExtrasDetails item={ingredients.find(i => i.id === parseInt(props.match.params.id))} recipes={recipes.filter(r => r.ingredients.some(i => i.ingredient.id === parseInt(props.match.params.id)))} />} />
             <Route path="/tags" exact render={() => <ExtrasList items={tags} />} />
+            <Route path="/tag/new" exact render={() => <TagForm addTag={addTag} tags={tags} />} />
             <Route path="/tag/:id" exact render={(props) => <ExtrasDetails item={tags.find(t => t.id === parseInt(props.match.params.id))} recipes={recipes.filter(r => r.tags.some(t => t.id === parseInt(props.match.params.id)))} />} />
             <Redirect to='/' />
           </Switch>

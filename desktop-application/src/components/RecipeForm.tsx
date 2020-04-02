@@ -84,7 +84,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({ addRecipe, editRecipe, recipe, 
       return;
     }
     setNameValidation({ error: false, helperText: '' });
-    setImageValidation({ error: false, helperText: '' })
+    setImageValidation({ error: false, helperText: '' });
     if (recipe && editRecipe) {
       await editRecipe(recipe.id, name, selectedIngredients, selectedTags, image, preparation);
       history.push(`/recipe/${recipe.id}`);
@@ -165,7 +165,10 @@ const RecipeForm: React.FC<RecipeFormProps> = ({ addRecipe, editRecipe, recipe, 
             <Button type="submit" variant="contained" style={{ float: 'left' }}>Back</Button>
           </Link>
         )}
-        <Button type="submit" disabled={submitDisabled} variant="contained" color="primary" style={{ float: 'right' }}>{recipe ? 'Save' : 'Add'}</Button>
+        <div style={{ marginTop: '20px' }}>
+          <Button onClick={() => history.goBack()} variant="contained" style={{ float: 'left' }}>Back</Button>
+          <Button type="submit" disabled={submitDisabled} variant="contained" color="primary" style={{ float: 'right' }}>{recipe ? 'Save' : 'Add'}</Button>
+        </div>
       </form>
     </Container>
   );

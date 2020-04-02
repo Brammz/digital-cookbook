@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, FormControl, IconButton, InputLabel, InputAdornment, OutlinedInput, Icon } from '@material-ui/core';
+import { Button, FormControl, Icon, IconButton, InputLabel, InputAdornment, List, ListItem, ListItemText, Popover, OutlinedInput } from '@material-ui/core';
 import { Add, Shuffle, Cancel } from '@material-ui/icons';
 import { RecipeList } from '.';
 import { Recipe } from '../types';
@@ -12,13 +12,22 @@ interface RecipesProps {
 
 const Recipes: React.FC<RecipesProps> = ({ recipes, shuffle }) => {
   const [filter, setFilter] = useState('');
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+
+  const search = (e: any) => {
+    setFilter(e.target.value.toLowerCase());
+  };
 
   const clearSearch = () => {
     setFilter('');
   };
 
-  const search = (e: any) => {
-    setFilter(e.target.value.toLowerCase());
+  const openAdd = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const closeAdd = () => {
+    setAnchorEl(null);
   };
 
   const filteredRecipes = recipes.filter(recipe => (
@@ -47,11 +56,42 @@ const Recipes: React.FC<RecipesProps> = ({ recipes, shuffle }) => {
             labelWidth={70}
           />
         </FormControl>
-        <Link to="/recipe/new" style={{ color: 'inherit', 'cursor': 'pointer', 'textDecoration': 'inherit' }}>
-          <Button variant="contained" color="primary" style={{ height: '100%', width: '100%' }}>
+        <div>
+          <Button onClick={openAdd} variant="contained" color="primary" style={{ height: '100%', width: '100%' }}>
             <Icon><Add /></Icon>
           </Button>
-        </Link>
+          <Popover
+            open={!!anchorEl}
+            anchorEl={anchorEl}
+            onClose={closeAdd}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'left',
+            }}
+          >
+            <List>
+              <Link to="/recipe/new" style={{ color: 'inherit', 'cursor': 'pointer', 'textDecoration': 'inherit' }}>
+                <ListItem button>
+                  <ListItemText primary="Recipe"></ListItemText>
+                </ListItem>
+              </Link>
+              <Link to="/ingredient/new" style={{ color: 'inherit', 'cursor': 'pointer', 'textDecoration': 'inherit' }}>
+                <ListItem button>
+                  <ListItemText primary="Ingredient"></ListItemText>
+                </ListItem>
+              </Link>
+              <Link to="/tag/new" style={{ color: 'inherit', 'cursor': 'pointer', 'textDecoration': 'inherit' }}>
+                <ListItem button>
+                  <ListItemText primary="Tag"></ListItemText>
+                </ListItem>
+              </Link>
+            </List>
+          </Popover>
+        </div>
         <Button variant="contained" color="primary" onClick={shuffle}>
           <Icon><Shuffle /></Icon>
         </Button>
