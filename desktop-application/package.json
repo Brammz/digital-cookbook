@@ -50,11 +50,11 @@
     },
     "productName": "Digital Cookbook",
     "win": {
-      "icon": "build/favicon.ico",
+      "icon": "build/icon.png",
       "target": "portable"
     },
     "mac": {
-      "icon": "build/favicon.ico"
+      "icon": "build/icon.png"
     }
   },
   "eslintConfig": {
