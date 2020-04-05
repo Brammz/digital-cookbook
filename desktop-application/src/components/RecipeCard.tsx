@@ -13,7 +13,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
       <Card style={{ height: '100%' }}>
         <CardActionArea style={{ height: '100%' }}>
           <CardMedia style={{ height: '20vh', objectFit: 'cover' }} image={recipe.image} title={recipe.name} />
-          <CardContent style={{ height: '100%' }}>
+          <CardContent style={{ height: '100%', padding: '4px 16px' }}>
             <Typography gutterBottom variant="h6" component="h6">
               {recipe.name}
             </Typography>

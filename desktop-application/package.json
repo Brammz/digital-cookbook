@@ -29,12 +29,14 @@
     "start": "npm run dev",
     "dev": "concurrently \"cross-env BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && electron .\"",
     "build": "npm run react-build && npm run electron-build",
+    "build-mac": "npm run react-build && npm run electron-build-mac",
     "react-start": "react-scripts start",
     "react-build": "react-scripts build",
     "react-test": "react-scripts test",
     "react-eject": "react-scripts eject",
     "electron-start": "electron .",
-    "electron-build": "electron-builder"
+    "electron-build": "electron-builder",
+    "electron-build-mac": "electron-builder --mac"
   },
   "build": {
     "appId": "com.digital-cookbook",
@@ -43,7 +45,16 @@
       "node_modules/**/*"
     ],
     "directories": {
-      "buildResources": "assets"
+      "buildResources": "assets",
+      "output": "dist-portable"
+    },
+    "productName": "Digital Cookbook",
+    "win": {
+      "icon": "build/favicon.ico",
+      "target": "portable"
+    },
+    "mac": {
+      "icon": "build/favicon.ico"
     }
   },
   "eslintConfig": {
