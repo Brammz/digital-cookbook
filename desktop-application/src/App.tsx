@@ -4,7 +4,7 @@ import { google } from 'googleapis';
 import { Container } from '@material-ui/core';
 import credentials from './credentials.json';
 import { ExtrasDetails, ExtrasList, IngredientForm, Navbar, Recipes, RecipeDetails, RecipeForm, TagForm } from './components';
-import { Recipe, IngredientInRecipe, Ingredient, Tag } from './types';
+import { Recipe, IngredientInRecipe, Ingredient, Tag, Unit } from './types';
 import './App.css';
 
 const client = new google.auth.JWT(credentials.client_email, '', credentials.private_key, ['https://www.googleapis.com/auth/spreadsheets']);
@@ -20,6 +20,7 @@ const App: React.FC = () => {
   const [recipes, setRecipes] = useState(Array<Recipe>());
   const [ingredients, setIngredients] = useState(Array<Ingredient>());
   const [tags, setTags] = useState(Array<Tag>());
+  const [units, setUnits] = useState(Array<Unit>());
 
   const shuffle = (recipes: Recipe[]) => {
     let a = [...recipes];
@@ -96,6 +97,23 @@ const App: React.FC = () => {
     });
 
     setRecipes(shuffle(processedRecipes));
+  };
+
+  const fetchUnits = async () => {
+    const unitsResponse = await sheets.spreadsheets.values.get({
+      auth: client,
+      spreadsheetId: credentials.sheet_id,
+      range: 'Units',
+      majorDimension: 'ROWS'
+    });
+
+    let processedUnits = Array<Unit>();
+
+    (unitsResponse?.data?.values || []).slice(1).forEach(unit => {
+      processedUnits.push(new Unit(unit[0], unit[1]));
+    });
+
+    setUnits(processedUnits);
   };
 
   const addRecipe = async (name: string, selectedIngredients: SelectedIngredient[], selectedTags: string[], image: string, preparation: string) => {
@@ -204,6 +222,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     fetchData(shuffle);
+    fetchUnits();
   }, []);
 
   return (
@@ -213,9 +232,9 @@ const App: React.FC = () => {
         <Container>
           <Switch>
             <Route path={['/', '/recipes']} exact render={() => <Recipes recipes={recipes} shuffle={shuffleProps} />} />
-            <Route path="/recipe/new" exact render={() => <RecipeForm addRecipe={addRecipe} ingredients={ingredients} tags={tags} />}/>
+            <Route path="/recipe/new" exact render={() => <RecipeForm addRecipe={addRecipe} ingredients={ingredients} tags={tags} units={units} />}/>
             <Route path="/recipe/:id" exact render={(props) => <RecipeDetails recipe={recipes.find(r => r.id === parseInt(props.match.params.id))} />} />
-            <Route path="/recipe/edit/:id" exact render={(props) => <RecipeForm editRecipe={editRecipe} recipe={recipes.find(r => r.id === parseInt(props.match.params.id))} ingredients={ingredients} tags={tags} />} />
+            <Route path="/recipe/edit/:id" exact render={(props) => <RecipeForm editRecipe={editRecipe} recipe={recipes.find(r => r.id === parseInt(props.match.params.id))} ingredients={ingredients} tags={tags} units={units} />} />
             <Route path="/ingredients" exact render={() => <ExtrasList items={ingredients} />} />
             <Route path="/ingredient/new" exact render={() => <IngredientForm addIngredient={addIngredient} ingredients={ingredients} />} />
             <Route path="/ingredient/:id" exact render={(props) => <ExtrasDetails item={ingredients.find(i => i.id === parseInt(props.match.params.id))} recipes={recipes.filter(r => r.ingredients.some(i => i.ingredient.id === parseInt(props.match.params.id)))} />} />

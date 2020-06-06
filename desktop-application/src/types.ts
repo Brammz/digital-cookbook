@@ -48,6 +48,16 @@ class Tag {
   }
 }
 
+class Unit {
+  key: string;
+  value: string;
+
+  constructor(key: string, value: string) {
+    this.key = key;
+    this.value = value;
+  }
+}
+
 class ShoppingIngredient {
   id: number;
   name: string;
@@ -70,6 +80,7 @@ export {
 	Recipe,
   IngredientInRecipe,
 	Ingredient,
-	Tag,
+  Tag,
+  Unit,
   ShoppingIngredient
 };

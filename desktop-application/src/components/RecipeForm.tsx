@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Button, Chip, Container, FormControl, Input, InputLabel, MenuItem, Select, TextField, Typography } from '@material-ui/core';
-import { Ingredient, Recipe, Tag } from '../types';
+import { Ingredient, Recipe, Tag, Unit } from '../types';
 
 type SelectedIngredient = {
   ingredient: string;
@@ -15,9 +15,10 @@ interface RecipeFormProps {
   recipe?: Recipe;
   ingredients: Ingredient[];
   tags: Tag[];
+  units: Unit[];
 }
 
-const RecipeForm: React.FC<RecipeFormProps> = ({ addRecipe, editRecipe, recipe, ingredients, tags }) => {
+const RecipeForm: React.FC<RecipeFormProps> = ({ addRecipe, editRecipe, recipe, ingredients, tags, units }) => {
   const [name, setName] = useState(recipe ? recipe.name : '');
   const [nameValidation, setNameValidation] = useState({ error: false, helperText: '' });
   const [image, setImage] = useState(recipe ? recipe.image : '');
@@ -120,10 +121,9 @@ const RecipeForm: React.FC<RecipeFormProps> = ({ addRecipe, editRecipe, recipe, 
                   <InputLabel>Unit</InputLabel>
                   <Select name="unit" label="Unit" value={selected.unit} onChange={(e) => handleIngredientChange(e, index)} native fullWidth>
                     <option key="None" value="" />
-                    <option key="#" value="#">#</option>
-                    <option key="g" value="g">gram</option>
-                    <option key="cl" value="cl">centiliter</option>
-                    <option key="el" value="el">eetlepel</option>
+                    {units.map(unit => (
+                      <option key={unit.key} value={unit.key}>{unit.value}</option>
+                    ))}
                   </Select>
                 </FormControl>
               </div>
