@@ -79,12 +79,12 @@ const RecipeForm: React.FC<RecipeFormProps> = ({ addRecipe, editRecipe, recipe, 
       setSubmitDisabled(false);
       return;
     }
-    if (!/^https?:\/\/(www\.)?[A-Za-z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/.test(image)) {
+    setNameValidation({ error: false, helperText: '' });
+    if (image.length < 10) {
       setImageValidation({ error: true, helperText: 'Not a valid url.' });
       setSubmitDisabled(false);
       return;
     }
-    setNameValidation({ error: false, helperText: '' });
     setImageValidation({ error: false, helperText: '' });
     if (recipe && editRecipe) {
       await editRecipe(recipe.id, name, selectedIngredients, selectedTags, image, preparation);
