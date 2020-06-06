@@ -16,18 +16,30 @@ function createWindow () {
   // window.webContents.openDevTools();
 }
 
-const template = [{
-  label: app.name,
-  submenu: [
-    { role: 'about' },
-    { type: 'separator' },
-    { role: 'hide' },
-    { role: 'hideothers' },
-    { role: 'unhide' },
-    { type: 'separator' },
-    { role: 'quit' },
-  ]
-}];
+const template = [
+  {
+    label: app.name,
+    submenu: [
+      { role: 'about' },
+      { type: 'separator' },
+      { role: 'hide' },
+      { role: 'hideothers' },
+      { role: 'unhide' },
+      { type: 'separator' },
+      { role: 'quit' },
+    ]
+  }, {
+    label: 'Edit',
+    submenu: [
+      { role: 'undo' },
+      { role: 'redo' },
+      { type: 'separator' },
+      { role: 'cut' },
+      { role: 'copy' },
+      { role: 'paste' },
+    ]
+  }
+];
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -36,6 +48,7 @@ app.whenReady().then(() => {
   Menu.setApplicationMenu(process.platform === 'darwin' ? Menu.buildFromTemplate(template) : null);
   globalShortcut.register('CommandOrControl+I', () => window.toggleDevTools());
   globalShortcut.register('F11', () => window.toggleDevTools());
+  globalShortcut.register('CommandOrControl+R', () => window.reload());
   globalShortcut.register('F5', () => window.reload());
   createWindow();
 });
